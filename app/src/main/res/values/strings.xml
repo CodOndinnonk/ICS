@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ICS</string>
+    <string name="title_activity_navigation_manu">NavigationManu</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="drawer_item_notifications">Уведомления</string>
+    <string name="drawer_item_marks">Оценки</string>
+    <string name="drawer_item_visiting">Посещаемость</string>
+    <string name="drawer_item_lectors">Преподаватели</string>
+    <string name="drawer_item_subjects">Предметы</string>
+    <string name="drawer_item_programs">Программы</string>
+    <string name="drawer_item_exit">Выход</string>
+    <string name="drawer_item_info">Справка</string>
+
+
+    <string name="action_settings">Settings</string>
+</resources>

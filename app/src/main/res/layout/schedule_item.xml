@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Название предмета"
+        android:id="@+id/subjectName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center|left"
+        android:layout_toLeftOf="@+id/roomNumber"
+        android:layout_toStartOf="@+id/roomNumber"
+        android:textSize="20dp"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="606ф"
+        android:id="@+id/roomNumber"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="20dp"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="лекция"
+        android:id="@+id/typeOfSubject"
+        android:textSize="15dp"
+        android:layout_below="@+id/subjectName"
+        android:layout_centerHorizontal="true"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Преподаватель"
+        android:id="@+id/subjestLecturer"
+        android:layout_below="@+id/typeOfSubject"
+        android:layout_toRightOf="@+id/typeOfSubject"
+        android:layout_toEndOf="@+id/typeOfSubject"
+        android:textSize="15dp"
+        android:textColor="#000000" />
+</RelativeLayout>
