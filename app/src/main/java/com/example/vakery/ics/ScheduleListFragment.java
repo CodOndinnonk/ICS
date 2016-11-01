@@ -2,6 +2,8 @@ package com.example.vakery.ics;
 
 
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,7 +24,8 @@ public class ScheduleListFragment extends Fragment {
     ArrayList<SubjectForList> listOfSubjects = new ArrayList<SubjectForList>();
     ScheduleListAdapter listAdapter;
     ProgressBar progressBar;
-    int pageNumber;//ноиер текущей стро пейджера
+    int pageNumber;//номер текущей стр пейджера
+    DatabaseHandler db;
 
 
     public static ScheduleListFragment newInstance(int page){
@@ -44,6 +47,9 @@ public class ScheduleListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         pageNumber = getArguments().getInt("N");
+
+        db = new DatabaseHandler(getContext());
+
     }
 
 
@@ -98,6 +104,16 @@ public class ScheduleListFragment extends Fragment {
         listOfSubjects.add(new SubjectForList("Информ технологии", "Информационные технологии", "Бабилунга", "Лекция", "408 ф"));
         listOfSubjects.add(new SubjectForList("Защита информации", "Защитае информационных технологий", "Болтенков", "Практика", "606 ф"));
     }
+
+
+
+
+
+
+
+
+
+
 
 
 }

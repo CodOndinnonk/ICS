@@ -11,6 +11,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     final String myLog = "myLog";
     Context mContext;
 
+
     private static final int DATABASE_VERSION = 1;//текущая версия БД
 
     public static final String DATABASE_NAME = "ICS.db";//название файла с БД
@@ -30,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_LECTURER = "Lecturer";//название поля date
 
     public static final String TABLE_WEEK = "Week";//НЕЧЕТНАЯ
-    public static final String KEY_KIND_OF_WEEK = "Kind_of_week";//1- нечетная, 2- четная
+    public static final String KEY_KIND_OF_WEEK = "Kind_of_week";//1- нечетная, 2- четная, 3- все недели
     public static final String KEY_DAY_OF_WEEK = "Day_of_week";//название поля date
     public static final String KEY_NUMBER_OF_SUBJECT = "Number_of_subject";//название поля date
     public static final String KEY_TYPE_OF_SUBJECT = "Type_of_subject";//название поля date
@@ -52,12 +53,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
+        Log.d(myLog, "DatabaseHandler DB");
     }
 
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d(myLog, "onCreate DB");
+
         //создание строки, содержащей команда для создания БД
         String CREATE_LECTURERS_TABLE = "CREATE TABLE " + TABLE_LECTURERS +
                 "("
@@ -68,7 +71,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PATRONYMIC + " TEXT,"
                 + KEY_CONTACTS + " TEXT"
                 + ")";
-        db.execSQL(CREATE_LECTURERS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_LECTURERS_TABLE);
 
         String CREATE_SUBJECTS_TABLE = "CREATE TABLE " + TABLE_SUBJECTS +
                 "("
@@ -77,11 +80,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_FULL_TITLE + " TEXT,"
                 + KEY_LECTURER + " INTEGER"
                 + ")";
-        db.execSQL(CREATE_SUBJECTS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_SUBJECTS_TABLE);
 
         String CREATE_WEEK_TABLE = "CREATE TABLE " + TABLE_WEEK +
                 "("
-                + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
+                + KEY_ID + " INTEGER NOT NULL PRIMARY KEY autoincrement,"
                 + KEY_KIND_OF_WEEK + " INTEGER,"
                 + KEY_DAY_OF_WEEK + " INTEGER,"
                 + KEY_NUMBER_OF_SUBJECT + " INTEGER,"
@@ -89,7 +92,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TYPE_OF_SUBJECT + " TEXT,"
                 + KEY_ROOM_NUMBER + " TEXT"
                 + ")";
-        db.execSQL(CREATE_WEEK_TABLE);
+        sqLiteDatabase.execSQL(CREATE_WEEK_TABLE);
 
         String CREATE_MARKS_TABLE = "CREATE TABLE " + TABLE_MARKS +
                 "("
@@ -97,55 +100,72 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_1_CHAPTER + " INTEGER,"
                 + KEY_2_CHAPTER + " INTEGER"
                 + ")";
-        db.execSQL(CREATE_MARKS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_MARKS_TABLE);
 
         String CREATE_VISITING_TABLE = "CREATE TABLE " + TABLE_VISITING +
                 "("
                 + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
                 + KEY_NUMBER_OF_DAYS + " INTEGER"
                 + ")";
-        db.execSQL(CREATE_VISITING_TABLE);
+        sqLiteDatabase.execSQL(CREATE_VISITING_TABLE);
 
         String CREATE_NOTIFICATIONS_TABLE = "CREATE TABLE " + TABLE_NOTIFICATIONS +
                 "("
                 + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
-                + KEY_SENDER + " TEXT,"
+                + KEY_SENDER + " INTEGER,"
                 + KEY_CONTENT + " TEXT,"
                 + KEY_IS_READ + " INTEGER"
                 + ")";
-        db.execSQL(CREATE_NOTIFICATIONS_TABLE);
-        DemoFill(db);
+        sqLiteDatabase.execSQL(CREATE_NOTIFICATIONS_TABLE);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //тестовая загрузка бд
+       FillDB fillDB = new FillDB(sqLiteDatabase);
+        fillDB.startFillDB();
+
     }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // данные для таблицы предметы
+    int[] subjId = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    String[] shortName = { "Микропроцессоры", "Управление проектами", "Телеком. сервисы", "Инф. технологии", "Сист. анализ", "БЖД",
+            "Защита информации", "Политология" };
 
-    public void DemoFill(SQLiteDatabase db){
-        ContentValues record = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
-        record.put(KEY_PHOTO, "no");
-        record.put(KEY_SURNAME, "Бабилунга");
-        record.put(KEY_NAME, "Оксана");
-        record.put(KEY_PATRONYMIC, "Юрьевна");
-        record.put(KEY_CONTACTS, "123-12-32");
-        db.insert(TABLE_LECTURERS, null, record);//добавление в таблицу щаблона, заполненного ранее
-        record.clear();
-        record.put(KEY_PHOTO, "no");
-        record.put(KEY_SURNAME, "Болтенков");
-        record.put(KEY_NAME, "В");
-        record.put(KEY_PATRONYMIC, "O");
-        record.put(KEY_CONTACTS, "123@mail.ru");
-        db.insert(TABLE_LECTURERS, null, record);//добавление в таблицу щаблона, заполненного ранее
-        record.clear();
+    String[] fullName = { "Микропроцессорное программирование", "Управление проектами", "Телекомуникацилнные сервисы",
+            "Информационные технологии", "Системный анализ", "Безопасность жизнедеятельности", "Защита информационных  технологий",
+            "Политология" };
+    int[] teacherId = { 1, 1, 1, 1, 1, 1, 1, 1 };
 
-        record.put(KEY_SHORT_TITLE, "Инф Технологии");
-        record.put(KEY_FULL_TITLE, "Информационные технологии");
-        record.put(KEY_LECTURER, 1);
-        db.insert(TABLE_SUBJECTS, null, record);//добавление в таблицу щаблона, заполненного ранее
-        record.clear();
-        record.put(KEY_SHORT_TITLE, "Защита информации");
-        record.put(KEY_FULL_TITLE, "Защита информационных технологий");
-        record.put(KEY_LECTURER, 2);
-        db.insert(TABLE_SUBJECTS, null, record);//добавление в таблицу щаблона, заполненного ранее
-        record.clear();
+    // данные для таблицы расписания
+    int[] kindOfWeek = { 1, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 2, 1, 2, 3, 1, 2, 3, 2};
+    int[] dayOfWeek = { 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5};
+    int[] NOfSubj = { 1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4, 1, 2, 2, 1, 2, 2, 3, 4};
+    int[] keySubj = { 1, 2, 3, 3, 4, 5, 4, 4, 6, 7, 7, 6, 5, 8, 8, 3, 2, 1, 1};
+    String[] typeSubj = { "практика", "лекция", "лекция", "практика", "лекция", "лекция", "лабораторная", "лекция", "практика", "лекция",
+            "лабораторная", "лекция", "лабораторная", "практика", "лекция", "практика", "лабораторная", "лекция", "лабораторная" };
+
+    String[] room = { "606ф", "308ф", "308ф", "606ф", "408ф", "408ф", "608ф", "408ф", "413ф", "308ф", "606ф", "409ф", "608ф",
+            "311ф", "203ф", "606ф", "609ф", "308ф", "608ф" };
+
+
+    public void FillDB(SQLiteDatabase db) {
+        Log.d(myLog, "--- FillDB ---");
+
+        ContentValues cv = new ContentValues();
+
+        // данные для таблицы предметы
+        for (int i = 0; i < subjId.length; i++) {
+            cv.clear();
+            cv.put(KEY_ID, subjId[i]);
+            cv.put(KEY_SHORT_TITLE, shortName[i]);
+            cv.put(KEY_FULL_TITLE, fullName[i]);
+            cv.put(KEY_LECTURER, teacherId[i]);
+            db.insert(TABLE_SUBJECTS, null, cv);
+        }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
     //при обновлении таблицы
@@ -162,17 +182,60 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public void getAlarmById(int Id) {//берем запись по Id, необходимое нам Id передается с другой активности
-        Log.d(myLog,"getAlarmById = ");
-        SQLiteDatabase db = this.getWritableDatabase();
-        //переменная, хранящая найденую запись
-        Cursor cursor = db.query(TABLE_LECTURERS, new String[] { DatabaseHandler.KEY_ID, DatabaseHandler.KEY_PHOTO,
-                        KEY_SURNAME, KEY_NAME, DatabaseHandler.KEY_PATRONYMIC, DatabaseHandler.KEY_CONTACTS },  KEY_ID + "=?",
-                new String[] { String.valueOf(Id) }, null, null, null, null);
-        if (cursor != null){
-            cursor.moveToFirst();
-        }
-//создание обьекта ЗАПИСЬ и заполняем его данными из найденной ранее записи
-        Log.d(myLog, "cursor.getString(3) = " + cursor.getString(3));
+    public void getSchedule(int kindOfWeek, int day){
+        Log.d(myLog, "getSchedule");
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+//вывод всех записей из табл дл теста работоспособности
+        Cursor c ;
+
+//        Log.d(myLog, "--- Table TABLE_WEEK ---");
+//        c = db.query(TABLE_WEEK, null, null, null, null, null, null);
+//        logCursor(c);
+//        c.close();
+//        Log.d(myLog, "--- ---");
+//        Log.d(myLog, "--- Table TABLE_SUBJECTS ---");
+//        c = db.query(TABLE_SUBJECTS, null, null, null, null, null, null);
+//        logCursor(c);
+//        c.close();
+//        Log.d(myLog, "--- ---");
+
+
+        Log.d(myLog, "--- INNER JOIN with rawQuery---");
+        String sqlQuery = "SELECT w.Number_of_subject, w.Type_of_subject, w.Room_number, s.Short_title\n" +
+                "FROM Week w \n" +
+                "\tINNER JOIN Subjects s ON ( w.Subject = s.id  )  \n" +
+                "WHERE w.Day_of_week = "+String.valueOf(day)+" AND\n" +
+                "\t(w.Kind_of_week = "+String.valueOf(kindOfWeek)+" OR\n" +
+                "\tw.Kind_of_week = 3)" ;
+        c = db.rawQuery(sqlQuery, null);
+        logCursor(c);
+        c.close();
+        Log.d(myLog, "--- ---");
+        db.close();
     }
+
+
+
+
+    // вывод в лог данных из курсора
+    void logCursor(Cursor c) {
+        if (c != null) {
+            if (c.moveToFirst()) {
+                String str;
+                do {
+                    str = "";
+                    for (String cn : c.getColumnNames()) {
+                        str = str.concat(cn + " = " + c.getString(c.getColumnIndex(cn)) + "; ");
+                    }
+                    Log.d(myLog, str);
+                } while (c.moveToNext());
+            }
+        } else
+            Log.d(myLog, "Cursor is null");
+    }
+
+
+
+
 }

@@ -2,6 +2,7 @@ package com.example.vakery.ics;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        db = new DatabaseHandler(this);
+
         // Инициализируем Navigation Drawer
         drawerResult = new Drawer()
                 .withActivity(this)
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.drawer_item_notifications).withIcon(FontAwesome.Icon.faw_bell).withBadge("1").withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_marks).withIcon(FontAwesome.Icon.faw_file),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_visiting).withIcon(FontAwesome.Icon.faw_eye),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_lectors).withIcon(FontAwesome.Icon.faw_male),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_subjects).withIcon(FontAwesome.Icon.faw_university),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_programs).withIcon(FontAwesome.Icon.faw_keyboard_o),
                         new PrimaryDrawerItem(),
@@ -97,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка длинного клика, например, только для SecondaryDrawerItem
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof SecondaryDrawerItem) {
-                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                            db.getAlarmById(1);
                             Toast.makeText(MainActivity.this, MainActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         return false;
@@ -121,16 +123,22 @@ public class MainActivity extends AppCompatActivity {
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
 
+
     }
 
 
     @Override
     public void onBackPressed() {
+
+        //заупуск метода выводящего данные из бд (для теста)
+        Log.d(myLog,"перед запросом расписания");
+        db.getSchedule(1,4);
+
         // Закрываем Navigation Drawer по нажатию системной кнопки "Назад" если он открыт
         if (drawerResult.isDrawerOpen()) {
             drawerResult.closeDrawer();
         } else {
-            super.onBackPressed();
+           // super.onBackPressed();
         }
     }
 

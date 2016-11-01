@@ -39,7 +39,6 @@
         android:id="@+id/progressBarOfWeek"
         android:layout_below="@+id/toggleButton"
         android:progress="60"
-        android:progressDrawable= "@drawable/custom_progress_bar"
         android:minHeight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp" />
