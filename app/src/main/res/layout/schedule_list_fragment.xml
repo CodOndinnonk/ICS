@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9FBE7"
     android:orientation="vertical">
 
 
-    <ToggleButton
+    <Button
+        android:text="Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New ToggleButton"
-        android:id="@+id/toggleButton"
-        android:layout_gravity="right"
-        android:textOff="нечет"
-        android:textOn="чет"
-        android:layout_alignParentTop="true"
+        android:id="@+id/kindOfWeekButton"
+        android:layout_above="@+id/progressBarOfWeek"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        style="@android:style/Widget.Button"
+         />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBarOfWeek"
+        android:progress="60"
+        android:minHeight="5dp"
+        android:layout_below="@+id/dayOfWeekText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,28 +37,18 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="день недели"
         android:id="@+id/dayOfWeekText"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/toggleButton"
-        android:layout_toStartOf="@+id/toggleButton"
-        android:layout_alignBottom="@+id/toggleButton"
         android:textColor="#000000"
-        android:textSize="30dp" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBarOfWeek"
-        android:layout_below="@+id/toggleButton"
-        android:progress="60"
-        android:minHeight="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/listViewOfSchedule"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/progressBarOfWeek" />
 
 </RelativeLayout>

@@ -9,7 +9,7 @@ public class SubjectForList {
     public String mType;
     public String mRoom;
 
-
+    public SubjectForList(){}
 
     public SubjectForList(int id, String Short_title, String Full_title, String Lecturer, String type, String room) {
         this.mId = id;

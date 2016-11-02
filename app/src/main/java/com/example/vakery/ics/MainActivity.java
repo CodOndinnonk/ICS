@@ -3,6 +3,7 @@ package com.example.vakery.ics;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     FragmentTransaction fragmentTransaction;
     ViewPager pager;
+    static int currentPageNumber=9;
+
 
 
     @Override
@@ -122,18 +126,31 @@ public class MainActivity extends AppCompatActivity {
         if(currentDayForPage < 1){currentDayForPage = 7;}
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                MainActivity.currentPageNumber = position + 1;
+                Log.d(myLog, "MainActivity.currentPageNumber  = " + MainActivity.currentPageNumber);
 
+            }
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+
+
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+
+            }
+        });
 
     }
 
 
     @Override
     public void onBackPressed() {
-
-        //заупуск метода выводящего данные из бд (для теста)
-        Log.d(myLog,"перед запросом расписания");
-        db.getSchedule(1,4);
-
         // Закрываем Navigation Drawer по нажатию системной кнопки "Назад" если он открыт
         if (drawerResult.isDrawerOpen()) {
             drawerResult.closeDrawer();
