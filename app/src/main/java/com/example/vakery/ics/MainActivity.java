@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     FragmentTransaction fragmentTransaction;
     ViewPager pager;
-    static int currentPageNumber=9;
 
 
 
@@ -126,25 +125,7 @@ public class MainActivity extends AppCompatActivity {
         if(currentDayForPage < 1){currentDayForPage = 7;}
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                MainActivity.currentPageNumber = position + 1;
-                Log.d(myLog, "MainActivity.currentPageNumber  = " + MainActivity.currentPageNumber);
 
-            }
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-
-
-            }
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-
-            }
-        });
 
     }
 

@@ -16,6 +16,7 @@
 
     <string name="week_odd">нечет.</string>
     <string name="week_even">чет.</string>
+    <string name="no_lesson">Нет пары</string>
 
 
     <string name="action_settings">Settings</string>

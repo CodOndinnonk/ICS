@@ -3,6 +3,7 @@ package Entitys;
 
 public class SubjectForList {
     public int mId;
+    public int mNumberOfSubject;
     public String mShort_title;
     public String mFull_title;
     public String mLecturer;
@@ -11,8 +12,9 @@ public class SubjectForList {
 
     public SubjectForList(){}
 
-    public SubjectForList(int id, String Short_title, String Full_title, String Lecturer, String type, String room) {
+    public SubjectForList(int id, int NSubject, String Short_title, String Full_title, String Lecturer, String type, String room) {
         this.mId = id;
+        this.mNumberOfSubject = NSubject;
         this.mShort_title = Short_title;
         this.mFull_title = Full_title;
         this.mLecturer = Lecturer;
@@ -20,12 +22,26 @@ public class SubjectForList {
         this.mRoom = room;
     }
 
-    public SubjectForList(String Short_title, String Full_title, String Lecturer, String type, String room) {
+    public SubjectForList(int NSubject, String Short_title, String Full_title, String Lecturer, String type, String room) {
+        this.mNumberOfSubject = NSubject;
         this.mShort_title = Short_title;
         this.mFull_title = Full_title;
         this.mLecturer = Lecturer;
         this.mType = type;
         this.mRoom = room;
+    }
+
+    public SubjectForList(int NSubject, String Short_title) {
+        this.mNumberOfSubject = NSubject;
+        this.mShort_title = Short_title;
+    }
+
+    public int getmNumberOfSubject() {
+        return mNumberOfSubject;
+    }
+
+    public void setmNumberOfSubject(int mNumberOfSubject) {
+        this.mNumberOfSubject = mNumberOfSubject;
     }
 
     public int getmId() {

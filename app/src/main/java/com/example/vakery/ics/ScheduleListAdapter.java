@@ -59,6 +59,7 @@ public class ScheduleListAdapter extends BaseAdapter {
         SubjectForList subjectByPosition = getSubject(position);
 
         // заполняем View в пункте списка данными из будильника
+        ((TextView) view.findViewById(R.id.numberOfSubject)).setText(String.valueOf(subjectByPosition.getmNumberOfSubject()));
         ((TextView) view.findViewById(R.id.subjectName)).setText(subjectByPosition.getmShort_title());
         ((TextView) view.findViewById(R.id.roomNumber)).setText(subjectByPosition.getmRoom());
         ((TextView) view.findViewById(R.id.typeOfSubject)).setText(subjectByPosition.getmType());

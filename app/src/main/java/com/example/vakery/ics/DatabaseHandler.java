@@ -53,13 +53,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
-    //    Log.d(myLog, "DatabaseHandler DB");
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d(myLog, "onCreate DB");
 
         //создание строки, содержащей команда для создания БД
         String CREATE_LECTURERS_TABLE = "CREATE TABLE " + TABLE_LECTURERS +
@@ -131,7 +129,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //при обновлении таблицы
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(myLog,"onUpgrade DB");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LECTURERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBJECTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VISITING);
@@ -143,13 +140,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public Cursor getSchedule(int kindOfWeek, int day){
-        Log.d(myLog, "getSchedule");
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
         Cursor cursor ;
 
-        Log.d(myLog, "--- INNER JOIN with rawQuery---");
-        String sqlQuery = "SELECT w.Number_of_subject, w.Type_of_subject, w.Room_number, s.Short_title\n" +
+        Log.d(myLog, "Расписание на "+kindOfWeek+" неделю "+day+" день");
+        String sqlQuery = "SELECT w.Number_of_subject, w.Type_of_subject, w.Room_number, s.Short_title, s.Full_title \n" +
                 "FROM Week w \n" +
                 "\tINNER JOIN Subjects s ON ( w.Subject = s.id  )  \n" +
                 "WHERE w.Day_of_week = "+String.valueOf(day)+" AND\n" +
