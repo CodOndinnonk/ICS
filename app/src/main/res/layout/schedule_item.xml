@@ -49,8 +49,7 @@
         android:textSize="20dp"
         android:textColor="#000000"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/numberOfSubject"
-        android:layout_toEndOf="@+id/numberOfSubject" />
+        android:layout_toRightOf="@+id/numberOfSubject" />
 
     <TextView
         android:text="1"

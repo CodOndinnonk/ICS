@@ -2,8 +2,6 @@ package com.example.vakery.ics;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Toast;
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -33,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     FragmentTransaction fragmentTransaction;
     ViewPager pager;
+    private PagerAdapter adapter;
+
 
 
 
@@ -114,7 +113,9 @@ public class MainActivity extends AppCompatActivity {
         //настройка пейджера
         fragmentTransaction = getFragmentManager().beginTransaction();
         pager=(ViewPager)findViewById(R.id.pager);
-        pager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+
+        adapter = new PagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
         //устанавливаем анимацию перелистывания пейджера(доп библиотека)
         pager.setPageTransformer(true,new DepthPageTransformer());
         // определяем текущий день недели, чтоб поставить нужную стр
@@ -125,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
         if(currentDayForPage < 1){currentDayForPage = 7;}
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
-
-
     }
 
 
@@ -138,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
            // super.onBackPressed();
         }
+    }
+
+    //переопреднеленный метод(стандартный не работает), который обновляет данные в страницах пейджера
+    public void notifyAdapter(int position) {
+        adapter.notifyDataSetChanged(position);
     }
 
 //    // Заглушка, работа с меню

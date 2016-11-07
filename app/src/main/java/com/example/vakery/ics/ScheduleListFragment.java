@@ -3,14 +3,11 @@ package com.example.vakery.ics;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +21,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
 import Entitys.SubjectForList;
-
-import static android.R.id.list;
-import static com.example.vakery.ics.R.id.pager;
 
 public class ScheduleListFragment extends Fragment {
     final String myLog = "myLog";
@@ -39,7 +32,8 @@ public class ScheduleListFragment extends Fragment {
     int pageNumber;//номер текущей стр пейджера
     DatabaseHandler db;
     Button kindWeekButton;
-    int dayOfWeek;
+    //переменная для ображения к методу для обновления адаптера пейджера
+    private MainActivity mActivity;
 
 
     public static ScheduleListFragment newInstance(int page){
@@ -61,13 +55,9 @@ public class ScheduleListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        pageNumber = getArguments() != null ? getArguments().getInt("N") : 1;
         pageNumber = getArguments().getInt("N");
 
         db = new DatabaseHandler(getContext());
-
-
-
     }
 
 
@@ -92,13 +82,15 @@ public class ScheduleListFragment extends Fragment {
         progressBar.setProgress(pageNumber + 1);
 
         kindWeekButton = (Button)view.findViewById(R.id.kindOfWeekButton);
-        kindWeekButton.setText(R.string.week_odd);
         kindWeekButton.setOnClickListener(onButtonClickListener);
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+        //определение текущей недели
+        if(Vars.getCurrentKindOfWeek() == 0) {
+            Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
+        }
 
-
-
-        //слешатель нажатия на пункт списка расписания
+        //слушатель нажатия на пункт списка расписания
         lvSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -120,8 +112,6 @@ public class ScheduleListFragment extends Fragment {
         String strDayOfWeek = new DateFormatSymbols().getWeekdays()[numberDayInWeek];
         dayOfWeek.setText(strDayOfWeek);
 
-
-
         return view;
     }
 
@@ -130,15 +120,15 @@ public class ScheduleListFragment extends Fragment {
     public void fillList(){
         //очищаем от предыдущих данных, на случай обновления
         listOfSubjects.clear();
-        int kindOfWeek = 3;//предметы за все типы недель
-        //определем нужный тип недели
-        if(kindWeekButton.getText().toString().equals(getString(R.string.week_odd))){
-            kindOfWeek = 1;
-        }else {
-            kindOfWeek = 2;
+
+        //устанавливаем нужную запись на кнопке
+        if(Vars.getCurrentKindOfWeek() == Vars.WEEK_ODD) {
+            kindWeekButton.setText(R.string.week_odd);
+        } else {
+            kindWeekButton.setText(R.string.week_even);
         }
 
-        Cursor cursor = db.getSchedule(kindOfWeek,pageNumber+1);
+        Cursor cursor = db.getSchedule(Vars.getCurrentKindOfWeek(),pageNumber+1);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -180,7 +170,7 @@ public class ScheduleListFragment extends Fragment {
                     break;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(myLog, "Выходной день в котором нет расписания");
         }
 
@@ -201,22 +191,32 @@ public class ScheduleListFragment extends Fragment {
 View.OnClickListener onButtonClickListener = new View.OnClickListener() {
     @Override
     public void onClick(View view) {
-        //меняем некст на кнопке
-        if(kindWeekButton.getText().toString().equals(getString(R.string.week_odd))) {
-            kindWeekButton.setText(R.string.week_even);
-        }else {
-            kindWeekButton.setText(R.string.week_odd);
+        //изменяем жначение выбранного типа недели
+        switch (Vars.getCurrentKindOfWeek()) {
+            case Vars.WEEK_ODD:
+                Vars.setCurrentKindOfWeek(Vars.WEEK_EVEN);
+                break;
+            case Vars.WEEK_EVEN:
+                Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);
+                break;
         }
 
-        fillList();//выхываем метод для обновления данных о предметах
+        fillList();//вызываем метод для обновления данных о предметах
         listAdapter.notifyDataSetChanged();//сообщаем адаптеру, что внесены изменения, чтоб он обновил список
+
+        if (mActivity != null) {
+            //вызываем метод, осуществляющий обновление фрагментов в пейджере(используется для изменения типа недели дл всех страниц пейджера)
+            mActivity.notifyAdapter(pageNumber);
+        }
     }
 };
 
 
-
-
-
-
-
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        //так как данный фрагмент используется в пейджере, который находится в MainActivity, то при выове этого метода
+        //мы получаем ссылку на активити, что позволяет потом вызывать нежные методы из MainActivity
+        this.mActivity = (MainActivity) activity;
+    }
 }
