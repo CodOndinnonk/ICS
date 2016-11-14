@@ -1,22 +1,18 @@
 package com.example.vakery.ics;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.os.Build;
-import android.support.v4.view.ViewPager;
+import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.eftimoff.viewpagertransformers.DepthPageTransformer;
+
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -25,32 +21,24 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import java.util.Calendar;
 
-
-public class MainActivity extends AppCompatActivity {
-
-    private Drawer.Result drawerResult = null;
+public class LecturerInfo extends AppCompatActivity {
     final String myLog = "myLog";
     DatabaseHandler db;
-    FragmentTransaction fragmentTransaction;
-    ViewPager pager;
-    private PagerAdapter adapter;
-
-
+    int lecturerId;
+    TextView lecturerName, lecturerContacts;
+    private Drawer.Result drawerResult = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lecturer_info);
 
         // Инициализируем Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        db = new DatabaseHandler(this);
 
         // Инициализируем Navigation Drawer
         drawerResult = new Drawer()
@@ -73,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         // Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager inputMethodManager = (InputMethodManager) LecturerInfo.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(LecturerInfo.this.getCurrentFocus().getWindowToken(), 0);
                     }
                     @Override
                     public void onDrawerClosed(View drawerView) {
@@ -85,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-                                  Toast.makeText(MainActivity.this, MainActivity.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LecturerInfo.this, LecturerInfo.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -108,75 +96,44 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка длинного клика, например, только для SecondaryDrawerItem
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof SecondaryDrawerItem) {
-                            Toast.makeText(MainActivity.this, MainActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LecturerInfo.this, LecturerInfo.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         return false;
                     }
                 })
                 .build();
 
-        //настройка пейджера
-        fragmentTransaction = getFragmentManager().beginTransaction();
-        pager=(ViewPager)findViewById(R.id.pager);
+        //заполнение полей
+        lecturerName = (TextView)findViewById(R.id.lecturerInfoName);
+        lecturerContacts = (TextView)findViewById(R.id.lecturerInfoContacts);
 
-        adapter = new PagerAdapter(getSupportFragmentManager());
-        pager.setAdapter(adapter);
-        //устанавливаем анимацию перелистывания пейджера(доп библиотека)
-        pager.setPageTransformer(true,new DepthPageTransformer());
-        // определяем текущий день недели, чтоб поставить нужную стр
-        Calendar calendar = Calendar.getInstance();
-        // берем текущий день -1, так как календарь считает с воскресенья, а нам надо с понедельника
-        int currentDayForPage = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        //если наш день =0, то такого дна нет (вс = 1 - 1 = 0 ) то пишем что вс = 7 день
-        if(currentDayForPage < 1){currentDayForPage = 7;}
-        // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
-        pager.setCurrentItem(currentDayForPage - 1);
+        db = new DatabaseHandler(this);
+        Intent intent = getIntent();
+        //извлекаем переданное id для получения данных
+        lecturerId = intent.getIntExtra("id",999);
 
+
+        setInfo();
     }
 
+    public void setInfo(){
 
+        Cursor cursor = db.getSubject(lecturerId);
 
-
-    @Override
-    public void onBackPressed() {
-        // Закрываем Navigation Drawer по нажатию системной кнопки "Назад" если он открыт
-        if (drawerResult.isDrawerOpen()) {
-            drawerResult.closeDrawer();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String lecturer = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)) + " " +
+                            cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)) + " " +
+                            cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC));
+                    lecturerName.setText(lecturer);
+//                    lecturerContacts.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_CONTACTS)));
+                } while (cursor.moveToNext());
+            }
         } else {
-           // super.onBackPressed();
+            Log.d(myLog, "Cursor is null");
         }
     }
 
-    //переопреднеленный метод(стандартный не работает), который обновляет данные в страницах пейджера
-    public void notifyAdapter(int position) {
-        adapter.notifyDataSetChanged(position);
-    }
-
-//    // Заглушка, работа с меню
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    // Заглушка, работа с меню
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
 
 }
-
-
-
-
-
-

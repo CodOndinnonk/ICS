@@ -34,11 +34,11 @@ public class FillDB {
 
     // данные для таблицы преподавателей
     int[] lectId = {1, 2, 3, 4, 5, 6, 7, 8};
-    String [] lectPhoto = {"*", "*", "*", "*", "*", "*", "*", "*"};
+    String [] lectPhoto = {"no", "no", "no", "no", "no", "no", "no", "no"};
     String [] lectSurname = {"Кондратев", "Тесленко", "Неврев", "Бабилунга", "Сытник", "Козерацкий", "Болтенков", "Шановская"};
     String [] lectName = {"Сергей", "Павел", "О", "О", "В", "Г", "В", "О"};
     String [] lectPatronymic = {"Борисович", "Александрович", "И", "Ю", "А", "В", "О", "А"};
-    String [] lectContacts = {"-", "-", "-", "-", "-", "-", "-", "-"};
+    String [] lectContacts = {"000", "000", "000", "000", "000", "000", "000", "000"};
 
 
 
@@ -47,9 +47,8 @@ public class FillDB {
     }
 
 
-   public void startFillDB(){
+   public void startFillDB() {
        Log.d(myLog, "--- FillDB ---");
-
 
 
        ContentValues cv = new ContentValues();
@@ -57,7 +56,7 @@ public class FillDB {
        // данные для таблицы предметы
        for (int i = 0; i < subjId.length; i++) {
            cv.clear();
-           cv.put(dh.KEY_ID, subjId[i]);
+           cv.put(dh.KEY_SUBJECT_ID, subjId[i]);
            cv.put(dh.KEY_SHORT_TITLE, shortName[i]);
            cv.put(dh.KEY_FULL_TITLE, fullName[i]);
            cv.put(dh.KEY_LECTURER, teacherId[i]);
@@ -76,6 +75,19 @@ public class FillDB {
            mdb.insert(dh.TABLE_WEEK, null, cv);
        }
 
+       // данные для таблицы преподавателей
+       for (int i = 0; i < lectId.length; i++) {
+           cv.clear();
+           cv.put(dh.KEY_LECTURER_ID, lectId[i]);
+           cv.put(dh.KEY_PHOTO, lectPhoto[i]);
+           cv.put(dh.KEY_SURNAME, lectSurname[i]);
+           cv.put(dh.KEY_NAME, lectName[i]);
+           cv.put(dh.KEY_PATRONYMIC, lectPatronymic[i]);
+           cv.put(dh.KEY_CONTACTS, lectContacts[i]);
+           mdb.insert(dh.TABLE_LECTURERS, null, cv);
+       }
+
+
 //проверка введенных данных
        Cursor c;
        Log.d(myLog, "--- Table TABLE_WEEK ---");
@@ -88,10 +100,14 @@ public class FillDB {
        logCursor(c);
        c.close();
        Log.d(myLog, "--- ---");
+       Log.d(myLog, "--- Table TABLE_LECTURERS ---");
+       c = mdb.query(dh.TABLE_LECTURERS, null, null, null, null, null, null);
+       logCursor(c);
+       c.close();
+       Log.d(myLog, "--- ---");
 
-    }
 
-
+   }
 
 
 

@@ -18,6 +18,12 @@
     <string name="week_even">чет.</string>
     <string name="no_lesson">Нет пары</string>
 
+    <string name="subject_name">Название предмета: </string>
+    <string name="type_of_subject">Тип занятия: </string>
+    <string name="room_of_subject">Аудитория: </string>
+    <string name="lecturer_of_subject">Преподаватель: </string>
+    <string name="contacts">Контакты: </string>
+
 
     <string name="action_settings">Settings</string>
 </resources>

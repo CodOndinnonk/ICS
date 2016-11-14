@@ -4,6 +4,7 @@ package com.example.vakery.ics;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,11 +18,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import Entitys.SubjectForList;
+import Entities.SubjectForList;
+
+import static android.os.Build.ID;
 
 public class ScheduleListFragment extends Fragment {
     final String myLog = "myLog";
@@ -34,6 +41,8 @@ public class ScheduleListFragment extends Fragment {
     Button kindWeekButton;
     //переменная для ображения к методу для обновления адаптера пейджера
     private MainActivity mActivity;
+    Intent dialogIntent;//интент для перехода
+
 
 
     public static ScheduleListFragment newInstance(int page){
@@ -92,10 +101,20 @@ public class ScheduleListFragment extends Fragment {
 
         //слушатель нажатия на пункт списка расписания
         lvSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(myLog, " Нажали на пункт списка = " + position);
-            }
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if ((listOfSubjects.get(position).getmShortTitle().equals(getString(R.string.no_lesson)))) {
+                        //если нажали на "нет пары"
+                        Toast.makeText(getContext(), getString(R.string.no_lesson), Toast.LENGTH_SHORT).show();
+                    }else {
+                        //создание интента для перехода из не активити
+                        dialogIntent = new Intent(getContext(), SubjectInfo.class);
+                        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        //передаем с интентом id выбранного предмета
+                        dialogIntent.putExtra("id", listOfSubjects.get(position).getmSubjectId());
+                        startActivity(dialogIntent);
+                    }
+                }
         });
 
         fillList();
@@ -136,13 +155,16 @@ public class ScheduleListFragment extends Fragment {
                     SubjectForList subjectForList = new SubjectForList();
 
                         subjectForList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT)));
-                        subjectForList.setmShort_title(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SHORT_TITLE)));
-                        subjectForList.setmFull_title(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_FULL_TITLE)));
-//                     //   subjectForList.setmLecturer(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER)));
                         subjectForList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
                         subjectForList.setmRoom(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
+                        subjectForList.setmSubjectId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_ID)));
+                        subjectForList.setmShortTitle(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SHORT_TITLE)));
+                        subjectForList.setmLecturerId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
+                        subjectForList.setmSurname(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)));
+                        subjectForList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
+                        subjectForList.setmPatronymic(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC)));
 
-                        listOfSubjects.add(subjectForList);
+                    listOfSubjects.add(subjectForList);
                 } while (cursor.moveToNext());
             }
         } else {

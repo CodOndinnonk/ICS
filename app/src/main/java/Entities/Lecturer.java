@@ -1,4 +1,4 @@
-package Entitys;
+package Entities;
 
 public class Lecturer {
     public int mId;

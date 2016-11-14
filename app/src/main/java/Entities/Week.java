@@ -1,4 +1,4 @@
-package Entitys;
+package Entities;
 
 public class Week {
     public int mId;
