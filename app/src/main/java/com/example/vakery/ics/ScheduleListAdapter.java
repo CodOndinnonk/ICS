@@ -70,8 +70,8 @@ public class ScheduleListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.typeOfSubject)).setText(subjectByPosition.getmType());
 
         if(subjectByPosition.getmSurname() != null) {
-            String lecturerInfo = subjectByPosition.getmSurname() + " " + String.valueOf(subjectByPosition.getmName().toCharArray() [0]) +
-                    ". " + String.valueOf(subjectByPosition.getmPatronymic().toCharArray() [0]) + ".";
+            String lecturerInfo = subjectByPosition.getmSurname() + " " + String.valueOf(subjectByPosition.getmName().charAt(0)) +
+                    ". " + String.valueOf(subjectByPosition.getmPatronymic().charAt(0)) + ".";
             ((TextView) view.findViewById(R.id.subjectLecturer)).setText(lecturerInfo);
         }else {
             ((TextView) view.findViewById(R.id.subjectLecturer)).setText("");
