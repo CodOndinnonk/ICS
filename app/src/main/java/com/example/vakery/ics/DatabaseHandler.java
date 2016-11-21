@@ -34,7 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_WEEK = "Week";//НЕЧЕТНАЯ
     public static final String KEY_KIND_OF_WEEK = "Kind_of_week";//1- нечетная, 2- четная, 3- все недели
     public static final String KEY_DAY_OF_WEEK = "Day_of_week";//название поля date
-    public static final String KEY_NUMBER_OF_SUBJECT = "Number_of_subject";//название поля date
+    public static final String KEY_NUMBER_OF_SUBJECT_WEEK = "Number_of_subject_week";//название поля date
     public static final String KEY_TYPE_OF_SUBJECT = "Type_of_subject";//название поля date
     public static final String KEY_ROOM_NUMBER = "Room_number";//название поля date
 
@@ -50,6 +50,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_SENDER = "Sender";//название поля date
     public static final String KEY_CONTENT = "Content";//название поля date
     public static final String KEY_IS_READ = "Is_read";//название поля date
+
+    public static final String TABLE_TIME = "Time";//название таблицы
+    public static final String KEY_NUMBER_OF_SUBJECT_TIME = "Number_of_subject_time";//название поля id
+    public static final String KEY_TIME_START = "Time_start";//название поля id
+    public static final String KEY_TIME_FINISH = "Time_finish";//название поля id
+
+
+
 
 
     public DatabaseHandler(Context context) {
@@ -87,7 +95,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER NOT NULL PRIMARY KEY autoincrement,"
                 + KEY_KIND_OF_WEEK + " INTEGER,"
                 + KEY_DAY_OF_WEEK + " INTEGER,"
-                + KEY_NUMBER_OF_SUBJECT + " INTEGER,"
+                + KEY_NUMBER_OF_SUBJECT_WEEK + " INTEGER,"
                 + KEY_SUBJECT + " INTEGER,"
                 + KEY_TYPE_OF_SUBJECT + " TEXT,"
                 + KEY_ROOM_NUMBER + " TEXT"
@@ -117,6 +125,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_READ + " INTEGER"
                 + ")";
         sqLiteDatabase.execSQL(CREATE_NOTIFICATIONS_TABLE);
+
+        String CREATE_TABLE_TIME = "CREATE TABLE " + TABLE_TIME +
+                "("
+                + KEY_ID + " INTEGER NOT NULL PRIMARY KEY autoincrement,"
+                + KEY_NUMBER_OF_SUBJECT_TIME + " INTEGER,"
+                + KEY_TIME_START + " TEXT,"
+                + KEY_TIME_FINISH + " TEXT"
+                + ")";
+        sqLiteDatabase.execSQL(CREATE_TABLE_TIME);
 
         ////////////////////////////////////////////////////////////////////////////////
         //тестовая загрузка бд
@@ -148,7 +165,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Log.d(myLog, "Расписание на "+kindOfWeek+" неделю "+day+" день");
 
-        String sqlQuery = "SELECT w.Number_of_subject, w.Type_of_subject, w.Room_number, s.Subject_id, s.Short_title," +
+        String sqlQuery = "SELECT w.Number_of_subject_week, w.Type_of_subject, w.Room_number, s.Subject_id, s.Short_title," +
                 " l.Lecturer_id, l.Surname, l.Name, l.Patronymic\n" +
                 "FROM Week w \n" +
                 "\tINNER JOIN Subjects s ON ( w.Subject = s.Subject_id  )  \n" +
@@ -185,6 +202,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "\tINNER JOIN Lecturers l ON ( s.Lecturer = l.Lecturer_id  )  \n" +
                 "\tINNER JOIN Week w ON ( s.Subject_id = w.Subject  )  \n" +
                 "WHERE s.Subject_id =  " + String.valueOf(subjectId) ;
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(myLog, "--- END---");
+        return cursor;
+    }
+
+
+    public Cursor getAllLecturers(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT * \n" +
+                "FROM Lecturers l";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(myLog, "--- END---");
+        return cursor;
+    }
+
+    public Cursor getTime(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT * \n" +
+                "FROM Time";
 
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);

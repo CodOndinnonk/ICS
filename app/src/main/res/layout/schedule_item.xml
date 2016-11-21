@@ -42,8 +42,6 @@
                 android:id="@+id/numberOfSubject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/subjectLecturer"
-                android:layout_alignParentTop="true"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingRight="6dp"
 
@@ -51,7 +49,11 @@
                 android:text="1"
                 android:textColor="@android:color/black"
                 android:textSize="25sp"
-                tools:textColor="@color/material_drawer_primary_text" />
+                tools:textColor="@color/material_drawer_primary_text"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignBottom="@+id/subjectTime"
+                android:layout_alignParentTop="true" />
 
             <TextView
                 android:id="@+id/roomNumber"
@@ -77,7 +79,8 @@
                 android:text="лекция"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#000000"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/subjectLecturer"
@@ -92,6 +95,18 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#000000"
                 android:textSize="15dp" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/subjectTime"
+                tools:text="10:00-11:00"
+                android:textColor="#a9a9a9"
+                android:layout_alignBaseline="@+id/subjectLecturer"
+                android:layout_alignBottom="@+id/subjectLecturer"
+                android:layout_toRightOf="@+id/numberOfSubject"
+                android:layout_toEndOf="@+id/numberOfSubject" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

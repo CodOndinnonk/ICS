@@ -40,6 +40,10 @@ public class FillDB {
     String [] lectPatronymic = {"Борисович", "Александрович", "И", "Ю", "А", "В", "О", "А"};
     String [] lectContacts = {"000", "000", "000", "000", "000", "000", "000", "000"};
 
+    int[] NLectId = {1, 2, 3, 4};
+    String[] timeStart = {"8:00", "9:50", "11:40", "13:30"};
+    String[] timeFinish = {"9:35", "11:25", "13:15", "15:05"};
+
 
 
     public FillDB(SQLiteDatabase db){
@@ -68,7 +72,7 @@ public class FillDB {
            cv.clear();
            cv.put(dh.KEY_KIND_OF_WEEK, kindOfWeek[i]);
            cv.put(dh.KEY_DAY_OF_WEEK, dayOfWeek[i]);
-           cv.put(dh.KEY_NUMBER_OF_SUBJECT, NOfSubj[i]);
+           cv.put(dh.KEY_NUMBER_OF_SUBJECT_WEEK, NOfSubj[i]);
            cv.put(dh.KEY_SUBJECT, keySubj[i]);
            cv.put(dh.KEY_TYPE_OF_SUBJECT, typeSubj[i]);
            cv.put(dh.KEY_ROOM_NUMBER, room[i]);
@@ -85,6 +89,15 @@ public class FillDB {
            cv.put(dh.KEY_PATRONYMIC, lectPatronymic[i]);
            cv.put(dh.KEY_CONTACTS, lectContacts[i]);
            mdb.insert(dh.TABLE_LECTURERS, null, cv);
+       }
+
+       // данные для таблицы времени
+       for (int i = 0; i < NLectId.length; i++) {
+           cv.clear();
+           cv.put(dh.KEY_NUMBER_OF_SUBJECT_TIME, NLectId[i]);
+           cv.put(dh.KEY_TIME_START, timeStart[i]);
+           cv.put(dh.KEY_TIME_FINISH, timeFinish[i]);
+           mdb.insert(dh.TABLE_TIME, null, cv);
        }
 
 

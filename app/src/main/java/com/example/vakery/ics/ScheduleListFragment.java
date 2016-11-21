@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import Entities.SubjectForList;
+import Entities.TimeSchedule;
 
 import static android.os.Build.ID;
 
@@ -67,6 +68,7 @@ public class ScheduleListFragment extends Fragment {
         pageNumber = getArguments().getInt("N");
 
         db = new DatabaseHandler(getContext());
+
     }
 
 
@@ -135,6 +137,7 @@ public class ScheduleListFragment extends Fragment {
     }
 
 
+
     //заполнение списка предметов
     public void fillList(){
         //очищаем от предыдущих данных, на случай обновления
@@ -154,7 +157,7 @@ public class ScheduleListFragment extends Fragment {
                 do {
                     SubjectForList subjectForList = new SubjectForList();
 
-                        subjectForList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT)));
+                        subjectForList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT_WEEK)));
                         subjectForList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
                         subjectForList.setmRoom(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
                         subjectForList.setmSubjectId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_ID)));
@@ -185,7 +188,7 @@ public class ScheduleListFragment extends Fragment {
                     listOfSubjects.add(forPrepare.get(flag));
                     flag++;//для перехода к следующему предмету
                 }else {//если номер пар не совал (к примеру у нас i=1 пара, а в списе первый элемент = 3 паре) то добавляем заглушку
-                    listOfSubjects.add(new SubjectForList(i,getString(R.string.no_lesson)));//заглушка с номером пары
+                    listOfSubjects.add(new SubjectForList(i,""));//заглушка с номером пары
                 }
                 //если мы просмотрели все предметы на день. считанные из бд, то выходим из цикла
                 if(flag == forPrepare.size()){

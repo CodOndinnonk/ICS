@@ -6,6 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="drawer_item_notifications">Уведомления</string>
+    <string name="drawer_item_schedule">Расписание</string>
     <string name="drawer_item_marks">Оценки</string>
     <string name="drawer_item_visiting">Посещаемость</string>
     <string name="drawer_item_lectors">Преподаватели</string>

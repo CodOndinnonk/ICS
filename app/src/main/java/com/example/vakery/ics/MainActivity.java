@@ -3,6 +3,8 @@ package com.example.vakery.ics;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,9 +29,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import java.util.Calendar;
 
+import Entities.TimeSchedule;
+
 
 public class MainActivity extends AppCompatActivity {
-
     private Drawer.Result drawerResult = null;
     final String myLog = "myLog";
     DatabaseHandler db;
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 .withHeader(R.layout.drawer_header)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawer_item_notifications).withIcon(FontAwesome.Icon.faw_bell).withBadge("1").withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_schedule).withIcon(FontAwesome.Icon.faw_tasks),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_marks).withIcon(FontAwesome.Icon.faw_file),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_visiting).withIcon(FontAwesome.Icon.faw_eye),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_lectors).withIcon(FontAwesome.Icon.faw_male),
@@ -85,7 +89,16 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-                                  Toast.makeText(MainActivity.this, MainActivity.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_lectors))){
+                                Intent intent = new Intent(getApplicationContext(), LecturersActivity.class);
+                                startActivity(intent);
+                            }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_schedule))){
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
+
+ Toast.makeText(MainActivity.this, MainActivity.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -131,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
         if(currentDayForPage < 1){currentDayForPage = 7;}
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
+
+        //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для экономии действий
+        Vars.fillTimeList(this);
 
     }
 

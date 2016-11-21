@@ -8,6 +8,9 @@ public class Lecturer {
     public String mPatronymic;
     public String mContacts;
 
+    public Lecturer(){
+    }
+
     public Lecturer(int id, String Photo, String Surname, String Name, String Patronymic, String Contacts){
         this.mId = id;
         this.mPhoto = Photo;

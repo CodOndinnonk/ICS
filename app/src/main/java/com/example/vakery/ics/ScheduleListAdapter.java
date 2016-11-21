@@ -78,6 +78,8 @@ public class ScheduleListAdapter extends BaseAdapter {
 
         }
 
+        ((TextView) view.findViewById(R.id.subjectTime)).setText(Vars.getTimeInfo(subjectByPosition.getmNumberOfSubject()));
+
         return view;
     }
 

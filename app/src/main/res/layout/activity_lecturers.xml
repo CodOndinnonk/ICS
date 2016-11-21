@@ -25,6 +25,10 @@
         android:layout_below="@+id/toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/lecturersList" />
+        android:id="@+id/lecturersList"
+        android:dividerHeight="0dp"
+        android:divider="@android:color/transparent"
+        android:background="@android:color/background_light"
+        />
 
 </RelativeLayout>
