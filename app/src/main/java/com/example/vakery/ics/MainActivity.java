@@ -2,10 +2,17 @@ package com.example.vakery.ics;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Environment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +22,7 @@ import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -27,8 +35,17 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import java.util.Calendar;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import Entities.Lecturer;
 import Entities.TimeSchedule;
 
 
@@ -48,12 +65,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //задаем контекст прилижения в переменную, чтоб можно было с ним работать из любого класса
+        Vars.setContext(getApplicationContext());
+
+        //проверка на наличие информации о пользователе, если ее нет, выводим диалоговое окно для ее добавления
+        if(! LocalSettingsFile.isUserInfo()){
+            Login myDialogFragment = new Login();
+            FragmentManager manager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+            myDialogFragment.show(transaction, "dialog");
+        }else {}
+
+
         // Инициализируем Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         db = new DatabaseHandler(this);
+
 
         // Инициализируем Navigation Drawer
         drawerResult = new Drawer()
@@ -98,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
 
- Toast.makeText(MainActivity.this, MainActivity.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+ Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -148,9 +178,89 @@ public class MainActivity extends AppCompatActivity {
         //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для экономии действий
         Vars.fillTimeList(this);
 
+
+        checkForInformation();
     }
 
 
+    public void checkForInformation(){
+        final ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
+        ArrayList<Integer> lecturersId = db.getLecturersId();
+
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(myLog, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+
+        //проверяем существует ли папка для хранения фото, берем ссылку на папку (File) из Vars
+        if (! Vars.getImageFileDir().exists()){
+            Log.d(myLog, "директории нет, создаем ее");
+            // создаем каталог
+            Vars.getImageFileDir().mkdirs();
+        }else {}
+
+        for (int i = 0; i < lecturersId.size(); i++) {
+            //формируем имя файла для проверки его наличия
+            String name = "lecturer_" + lecturersId.get(i).toString() + ".png";
+            try {
+                //проверяем наличие фотографии в папке
+                if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
+                    //создаем экземпляр преподавателя с id и Photo_url
+                    listOfLecturers.add(new Lecturer(db.getLecturer(lecturersId.get(i)).getmId(),db.getLecturer(lecturersId.get(i)).getmPhoto()));
+                } else {
+                }
+            }catch (Exception e) {
+                Log.d(myLog, "Ошибка проверки наличия фото");
+            }
+        }
+        //если лист с преподавателями, которых надо скачать не пустой
+        if(listOfLecturers.size() > 0) {
+            //проверка на наличие интернет соединения
+            if (checkInternetConnection(getApplicationContext())) {
+
+                //создаем фоновый поток, чтоб основной не подвисал
+                //Thread t = new Thread(new Runnable() {
+                //    public void run() {
+                DownloadInfo downloadInfo = new DownloadInfo(getApplicationContext());
+                downloadInfo.loadImg(listOfLecturers);
+                //     }
+//            });
+//            //запуск потока
+//            t.start();
+            } else {
+                Log.d(myLog, "отсутствует интернет соединение");
+                Toast.makeText(getApplicationContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
+            }
+
+
+
+        }
+    }
+
+
+    // метод для проверки подключения
+    public static boolean checkInternetConnection(final Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
 
 
     @Override

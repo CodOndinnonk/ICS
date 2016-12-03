@@ -4,22 +4,52 @@ package com.example.vakery.ics;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import Entities.TimeSchedule;
 
-public class Vars {
+public  class Vars {
 
-    static final String myLog = "myLog";
+    public static final String myLog = "myLog";
+
+    private static Context context = null ;
 
     public static final int WEEK_ODD = 1;
     public static final int WEEK_EVEN = 2;
 
-    public static int currentKindOfWeek = 0;//текущий тип недели, отображаемый в расписании
+    private static int currentKindOfWeek = 0;//текущий тип недели, отображаемый в расписании
 
-    public  static ArrayList<TimeSchedule> listOfTime = new ArrayList<TimeSchedule>();
+    //список с временем начала и конца всех пар
+    private  static ArrayList<TimeSchedule> listOfTime = new ArrayList<TimeSchedule>();
+
+    private static File imageFileDir;
+    public static Context getContext;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    static {imageFileDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ICS");
+          }
+
+    public static Context getContext() {
+        return context;
+    }
+
+    public static void setImageFileDir(File imageFileDir) {
+        Vars.imageFileDir = imageFileDir;
+    }
+
+
+    public static void setContext(Context context) {
+        Vars.context = context;
+    }
+
+    public static File getImageFileDir() {
+        return imageFileDir;
+    }
 
     public static void setCurrentKindOfWeek(int setCurrentKindOfWeek) {
         Vars.currentKindOfWeek = setCurrentKindOfWeek;
@@ -54,13 +84,13 @@ public class Vars {
         }
     }
 
-    //возвращает строке с временем начала и конца пары
+    //возвращает строку с временем начала и конца пары
     public static String getTimeInfo(int numberOfSubject){
         String result = "-";
-        //поиск нуной нам пары в списке
+        //поиск нужной нам пары в списке
         for (int i = 0; i < listOfTime.size(); i++){
-            Log.d(myLog, "listOfTime.get(i).getmSubjectNumber() = " + listOfTime.get(i).getmSubjectNumber());
-            Log.d(myLog, "numberOfSubject = " + numberOfSubject);
+//            Log.d(myLog, "listOfTime.get(i).getmSubjectNumber() = " + listOfTime.get(i).getmSubjectNumber());
+//            Log.d(myLog, "numberOfSubject = " + numberOfSubject);
             if(listOfTime.get(i).getmSubjectNumber() == numberOfSubject){
                 result = listOfTime.get(i).getmStart() + " - " +
                         listOfTime.get(i).getmFinish();

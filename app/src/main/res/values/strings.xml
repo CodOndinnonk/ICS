@@ -25,6 +25,15 @@
     <string name="lecturer_of_subject">Преподаватель: </string>
     <string name="contacts">Контакты: </string>
 
+    <string name="no_internet_connection_info">Невозможно скачать данные.Отсутствует интернет соединение. </string>
+    <string name="loading_error">Ошибка при скачивании </string>
+
+    <string name="student_name">Имя студента </string>
+    <string name="student_surname">Фамилия студента </string>
+    <string name="student_group">Группа студента </string>
+
+    <string name="fill_all_fields">Заполните все поля </string>
+
 
     <string name="action_settings">Settings</string>
 </resources>

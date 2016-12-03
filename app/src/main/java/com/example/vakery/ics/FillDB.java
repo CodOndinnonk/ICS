@@ -34,7 +34,15 @@ public class FillDB {
 
     // данные для таблицы преподавателей
     int[] lectId = {1, 2, 3, 4, 5, 6, 7, 8};
-    String [] lectPhoto = {"no", "no", "no", "no", "no", "no", "no", "no"};
+    String [] lectPhoto = {"http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg",
+            "http://murkote.com/wp-content/uploads/2016/04/snoopy-cat-10.jpg.pagespeed.ce.skntr4ZWir.jpg"
+    };
     String [] lectSurname = {"Кондратев", "Тесленко", "Неврев", "Бабилунга", "Сытник", "Козерацкий", "Болтенков", "Шановская"};
     String [] lectName = {"Сергей", "Павел", "О", "О", "В", "Г", "В", "О"};
     String [] lectPatronymic = {"Борисович", "Александрович", "И", "Ю", "А", "В", "О", "А"};
@@ -83,7 +91,7 @@ public class FillDB {
        for (int i = 0; i < lectId.length; i++) {
            cv.clear();
            cv.put(dh.KEY_LECTURER_ID, lectId[i]);
-           cv.put(dh.KEY_PHOTO, lectPhoto[i]);
+           cv.put(dh.KEY_PHOTO_URL, lectPhoto[i]);
            cv.put(dh.KEY_SURNAME, lectSurname[i]);
            cv.put(dh.KEY_NAME, lectName[i]);
            cv.put(dh.KEY_PATRONYMIC, lectPatronymic[i]);

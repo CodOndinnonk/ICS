@@ -20,7 +20,12 @@ public class Lecturer {
         this.mContacts = Contacts;
     }
 
-    public Lecturer(String Photo, String Surname, String Name, String Patronymic, String Contacts){
+    public Lecturer(int id, String Photo) {
+        this.mId = id;
+        this.mPhoto = Photo;
+    }
+
+        public Lecturer(String Photo, String Surname, String Name, String Patronymic, String Contacts){
         this.mPhoto = Photo;
         this.mSurname = Surname;
         this.mName = Name;

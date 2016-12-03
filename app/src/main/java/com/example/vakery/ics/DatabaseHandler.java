@@ -6,8 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import Entities.Lecturer;
+
 public class DatabaseHandler extends SQLiteOpenHelper {
     final String myLog = "myLog";
+    final String logQuery = "logQuery";
     Context mContext;
 
 
@@ -19,7 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TABLE_LECTURERS = "Lecturers";//название таблицы
     public static final String KEY_LECTURER_ID = "Lecturer_id";//название поля id
-    public static final String KEY_PHOTO = "Photo";//название поля date
+    public static final String KEY_PHOTO_URL = "Photo_url";//название поля date
     public static final String KEY_SURNAME = "Surname";//название поля date
     public static final String KEY_NAME = "Name";//название поля date
     public static final String KEY_PATRONYMIC = "Patronymic";//название поля date
@@ -68,12 +73,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d(myLog, "onCreate DB");
+     //   Log.d(myLog, "onCreate DB");
         //создание строки, содержащей команда для создания БД
         String CREATE_LECTURERS_TABLE = "CREATE TABLE " + TABLE_LECTURERS +
                 "("
                 + KEY_LECTURER_ID + " INTEGER NOT NULL PRIMARY KEY,"
-                + KEY_PHOTO + " TEXT,"
+                + KEY_PHOTO_URL + " TEXT,"
                 + KEY_SURNAME + " TEXT,"
                 + KEY_NAME + " TEXT,"
                 + KEY_PATRONYMIC + " TEXT,"
@@ -187,7 +192,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);
         db.close();
-        Log.d(myLog, "--- END---");
+        Log.d(logQuery, "--- END---");
         return cursor;
     }
 
@@ -206,7 +211,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);
         db.close();
-        Log.d(myLog, "--- END---");
+        Log.d(logQuery, "--- END---");
         return cursor;
     }
 
@@ -222,7 +227,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);
         db.close();
-        Log.d(myLog, "--- END---");
+        Log.d(logQuery, "--- END---");
         return cursor;
     }
 
@@ -237,24 +242,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);
         db.close();
-        Log.d(myLog, "--- END---");
+        Log.d(logQuery, "--- END---");
         return cursor;
     }
 
-    public Cursor getLecturer(int lecturerId){
+    public Lecturer getLecturer(int lecturerId) {
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
-
-        Cursor cursor ;
-
-        String sqlQuery = "SELECT l.Photo, l.Surname, l.Name, l.Patronymic, l.Contacts\n" +
+        Cursor cursor;
+        String sqlQuery = "SELECT l.Lecturer_id, l.Photo_url, l.Surname, l.Name, l.Patronymic, l.Contacts\n" +
                 "FROM Lecturers l \n" +
-                "WHERE l.Lecturer_id = " + String.valueOf(lecturerId) ;
+                "WHERE l.Lecturer_id = " + String.valueOf(lecturerId);
 
         cursor = db.rawQuery(sqlQuery, null);
-        logCursor(cursor);
+        Lecturer lecturer = new Lecturer();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+             lecturer.setmId((cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID))));
+             lecturer.setmPhoto((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PHOTO_URL))));
+             lecturer.setmSurname((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME))));
+             lecturer.setmName((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME))));
+             lecturer.setmPatronymic((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC))));
+             lecturer.setmContacts((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_CONTACTS))));
+            }
+        } else {
+            Log.d(myLog, "Cursor is null");
+        }
+        return lecturer;
+    }
+
+
+    public ArrayList<Integer> getLecturersId(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+        Cursor cursor ;
+        String sqlQuery = "SELECT l.Lecturer_id\n" +
+                "FROM Lecturers l  " ;
+
+        cursor = db.rawQuery(sqlQuery, null);
+        ArrayList<Integer> lecturersId = new ArrayList<>(cursor.getCount());
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    lecturersId.add(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
+                } while (cursor.moveToNext());
+            }
+        } else
+            Log.d(logQuery, "Cursor is null");
+
         db.close();
-        Log.d(myLog, "--- END---");
-        return cursor;
+        return lecturersId;
     }
 
 
@@ -269,11 +304,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     for (String cn : c.getColumnNames()) {
                         str = str.concat(cn + " = " + c.getString(c.getColumnIndex(cn)) + "; ");
                     }
-                    Log.d(myLog, str);
+                    Log.d(logQuery, str);
                 } while (c.moveToNext());
             }
         } else
-            Log.d(myLog, "Cursor is null");
+            Log.d(logQuery, "Cursor is null");
     }
 
 
