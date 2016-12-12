@@ -23,9 +23,9 @@ public class LecturersListAdapter extends BaseAdapter {
     final String myLog = "myLog";
 
 
-    LecturersListAdapter(Context contextGet, ArrayList<Lecturer> subjects) {
+    LecturersListAdapter(Context contextGet, ArrayList<Lecturer> lecturers) {
         mContext = contextGet;
-        objects = subjects;
+        objects = lecturers;
 
         layoutInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

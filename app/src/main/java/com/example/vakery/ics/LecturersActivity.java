@@ -3,6 +3,8 @@ package com.example.vakery.ics;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,11 +34,7 @@ import Entities.SubjectForList;
 public class LecturersActivity extends AppCompatActivity {
     private Drawer.Result drawerResult = null;
     final String myLog = "myLog";
-    ListView lvLecturers;
     DatabaseHandler db;
-    ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
-    LecturersListAdapter listAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,56 +122,17 @@ public class LecturersActivity extends AppCompatActivity {
                 .build();
 
 
-        lvLecturers = (ListView)findViewById(R.id.lecturersList);
-
-        //слушатель нажатия на пункт списка преподавателей
-        lvLecturers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent go = new Intent(getApplicationContext(), LecturerInfo.class);
-                //передаем с интентом id выбранного преподавателя
-                go.putExtra("id", listOfLecturers.get(position).getmId());
-                startActivity(go);
-            }
-        });
-
-        fillList();
-
-        //назначаем адаптер для списка с расписанием
-        listAdapter = new LecturersListAdapter(this, listOfLecturers);
-        lvLecturers.setAdapter(listAdapter);
-
+        // определяем фрагмент для пейджера
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        //ставим адаптер на пейджер
+        viewPager.setAdapter(new LecturersPagerAdapter(getSupportFragmentManager()));
+        //определяем фрагмент "вкладок"
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        //устанавливаем привязку к ранее объявленому пейджеру, чтоб они были связаны
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
 
-    //заполнение списка предметов
-    public void fillList(){
-        //очищаем от предыдущих данных, на случай обновления
-        listOfLecturers.clear();
-
-        Cursor cursor = db.getAllLecturers();
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    Lecturer lecturer = new Lecturer();
-
-                    lecturer.setmId((cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID))));
-                    lecturer.setmPhoto((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PHOTO_URL))));
-                    lecturer.setmSurname((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME))));
-                    lecturer.setmName((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME))));
-                    lecturer.setmPatronymic((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC))));
-                    lecturer.setmContacts((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_CONTACTS))));
-
-                    listOfLecturers.add(lecturer);
-                } while (cursor.moveToNext());
-            }
-        } else {
-            Log.d(myLog, "Cursor is null");
-        }
-
-
-    }
 
 }

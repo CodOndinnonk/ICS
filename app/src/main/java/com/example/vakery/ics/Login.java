@@ -22,12 +22,9 @@ import android.widget.Toast;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 public class Login extends DialogFragment  {
-
-
-
-
-
     private View form = null;
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -72,10 +69,13 @@ public class Login extends DialogFragment  {
 
     }
 
+
     @Override
     public void onDismiss(DialogInterface unused) {
         super.onDismiss(unused);
     }
+
+
     @Override
     public void onCancel(DialogInterface unused) {
         super.onCancel(unused);

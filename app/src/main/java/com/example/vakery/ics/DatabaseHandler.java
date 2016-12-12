@@ -29,6 +29,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_NAME = "Name";//название поля date
     public static final String KEY_PATRONYMIC = "Patronymic";//название поля date
     public static final String KEY_CONTACTS = "Contacts";//название поля date
+    public static final String KEY_ICS = "ICS";//название поля date
+
 
     public static final String TABLE_SUBJECTS = "Subjects";//название таблицы
     public static final String KEY_SUBJECT_ID = "Subject_id";//название поля id
@@ -82,7 +84,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_SURNAME + " TEXT,"
                 + KEY_NAME + " TEXT,"
                 + KEY_PATRONYMIC + " TEXT,"
-                + KEY_CONTACTS + " TEXT"
+                + KEY_CONTACTS + " TEXT,"
+                + KEY_ICS + " INTEGER"
                 + ")";
         sqLiteDatabase.execSQL(CREATE_LECTURERS_TABLE);
 
@@ -231,6 +234,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getICSLecturers(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT * \n" +
+                "FROM Lecturers l \n" +
+                "WHERE l.ICS = 1";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
+
+    public Cursor getNotICSLecturers(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT * \n" +
+                "FROM Lecturers l \n" +
+                "WHERE l.ICS = 0";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
+
     public Cursor getTime(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -249,7 +284,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Lecturer getLecturer(int lecturerId) {
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor;
-        String sqlQuery = "SELECT l.Lecturer_id, l.Photo_url, l.Surname, l.Name, l.Patronymic, l.Contacts\n" +
+        String sqlQuery = "SELECT *\n" +
                 "FROM Lecturers l \n" +
                 "WHERE l.Lecturer_id = " + String.valueOf(lecturerId);
 
@@ -275,7 +310,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor ;
         String sqlQuery = "SELECT l.Lecturer_id\n" +
-                "FROM Lecturers l  " ;
+                "FROM Lecturers l "
+                 ;
 
         cursor = db.rawQuery(sqlQuery, null);
         ArrayList<Integer> lecturersId = new ArrayList<>(cursor.getCount());

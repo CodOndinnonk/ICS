@@ -1,28 +1,19 @@
 package com.example.vakery.ics;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -37,16 +28,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import Entities.Lecturer;
-import Entities.TimeSchedule;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -55,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHandler db;
     FragmentTransaction fragmentTransaction;
     ViewPager pager;
-    private PagerAdapter adapter;
-
-
+    private SchedulePagerAdapter adapter;
 
 
     @Override
@@ -76,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
             myDialogFragment.show(transaction, "dialog");
         }else {}
 
-
         // Инициализируем Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         db = new DatabaseHandler(this);
-
 
         // Инициализируем Navigation Drawer
         drawerResult = new Drawer()
@@ -162,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = getFragmentManager().beginTransaction();
         pager=(ViewPager)findViewById(R.id.pager);
 
-        adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter = new SchedulePagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         //устанавливаем анимацию перелистывания пейджера(доп библиотека)
         pager.setPageTransformer(true,new DepthPageTransformer());
@@ -177,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
         //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для экономии действий
         Vars.fillTimeList(this);
-
 
         checkForInformation();
     }

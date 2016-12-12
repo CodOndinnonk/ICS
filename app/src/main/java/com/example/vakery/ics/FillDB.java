@@ -47,6 +47,7 @@ public class FillDB {
     String [] lectName = {"Сергей", "Павел", "О", "О", "В", "Г", "В", "О"};
     String [] lectPatronymic = {"Борисович", "Александрович", "И", "Ю", "А", "В", "О", "А"};
     String [] lectContacts = {"000", "000", "000", "000", "000", "000", "000", "000"};
+    int [] lectICS = {1, 1, 1, 1, 1, 0, 1, 0};
 
     int[] NLectId = {1, 2, 3, 4};
     String[] timeStart = {"8:00", "9:50", "11:40", "13:30"};
@@ -96,6 +97,7 @@ public class FillDB {
            cv.put(dh.KEY_NAME, lectName[i]);
            cv.put(dh.KEY_PATRONYMIC, lectPatronymic[i]);
            cv.put(dh.KEY_CONTACTS, lectContacts[i]);
+           cv.put(dh.KEY_ICS, lectICS[i]);
            mdb.insert(dh.TABLE_LECTURERS, null, cv);
        }
 

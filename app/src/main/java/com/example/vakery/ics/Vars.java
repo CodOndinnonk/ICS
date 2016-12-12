@@ -1,7 +1,6 @@
 package com.example.vakery.ics;
 
 
-import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
@@ -27,8 +26,6 @@ public  class Vars {
     private  static ArrayList<TimeSchedule> listOfTime = new ArrayList<TimeSchedule>();
 
     private static File imageFileDir;
-    public static Context getContext;
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     static {imageFileDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ICS");

@@ -7,12 +7,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
-public class PagerAdapter extends FragmentStatePagerAdapter {
-
+public class SchedulePagerAdapter extends FragmentStatePagerAdapter {
     ArrayList<Fragment> mFragments;//лист с страницами пейджера (днями недели), используется для обновления необходимых страниц
 
 
-    public PagerAdapter(FragmentManager mgr) {
+    public SchedulePagerAdapter(FragmentManager mgr) {
         super(mgr);
         mFragments = new ArrayList<>(7);//7 так как 7 дней недели
         for (int i = 0; i < 7; i++) {
@@ -32,6 +31,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         return mFragments.get(position);
     }
+
 
     //переопределенный метод, изменяющий элементы  стоящие радом с текущим(слево и справо), передается позиция элемента, который на экране
     public void notifyDataSetChanged(int position) {

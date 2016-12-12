@@ -39,7 +39,6 @@ public class SubjectInfo extends AppCompatActivity {
     private Drawer.Result drawerResult = null;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,12 +120,10 @@ public class SubjectInfo extends AppCompatActivity {
 
         lecturerInfo.setOnClickListener(onLecturerClickListener);
 
-
         db = new DatabaseHandler(this);
         Intent intent = getIntent();
         //извлекаем переданное id для получения данных
         subjectId = intent.getIntExtra("id",999);
-
 
         setInfo();
     }
@@ -136,9 +133,7 @@ public class SubjectInfo extends AppCompatActivity {
 
 
     public void setInfo(){
-
         Cursor cursor = db.getSubject(subjectId);
-
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {

@@ -45,7 +45,6 @@ public class ScheduleListFragment extends Fragment {
     Intent dialogIntent;//интент для перехода
 
 
-
     public static ScheduleListFragment newInstance(int page){
         ScheduleListFragment pageFragment = new ScheduleListFragment();
         Bundle args = new Bundle();
@@ -54,7 +53,6 @@ public class ScheduleListFragment extends Fragment {
         pageFragment.setArguments(args);
         return pageFragment;
     }
-
 
 
     public ScheduleListFragment(){
