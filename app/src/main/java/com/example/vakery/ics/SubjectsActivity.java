@@ -2,8 +2,7 @@ package com.example.vakery.ics;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -22,18 +22,29 @@ import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
-public class LecturersActivity extends AppCompatActivity {
-    private Drawer.Result drawerResult = null;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import Entities.SubjectForScheduleList;
+import Entities.SubjectForSubjectsList;
+
+public class SubjectsActivity extends AppCompatActivity {
     final String myLog = "myLog";
     DatabaseHandler db;
+    private Drawer.Result drawerResult = null;
+    ListView lvSubjects;
+    ArrayList<SubjectForSubjectsList> listOfSubjects = new ArrayList<SubjectForSubjectsList>();
+    SubjectsListAdapter listAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lecturers);
+        setContentView(R.layout.activity_subjects);
 
         // Инициализируем Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -61,8 +72,8 @@ public class LecturersActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         // Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) LecturersActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(LecturersActivity.this.getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager inputMethodManager = (InputMethodManager) SubjectsActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(SubjectsActivity.this.getCurrentFocus().getWindowToken(), 0);
                     }
                     @Override
                     public void onDrawerClosed(View drawerView) {
@@ -81,8 +92,11 @@ public class LecturersActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_exit))){
+                              //  prepareForExit();
+                            }
 
-    Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -105,25 +119,66 @@ public class LecturersActivity extends AppCompatActivity {
                     // Обработка длинного клика, например, только для SecondaryDrawerItem
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof SecondaryDrawerItem) {
-                            Toast.makeText(LecturersActivity.this, LecturersActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SubjectsActivity.this, SubjectsActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         return false;
                     }
                 })
                 .build();
 
+        lvSubjects = (ListView)findViewById(R.id.listViewOfSubjects);
 
-        // определяем фрагмент для пейджера
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        //ставим адаптер на пейджер
-        viewPager.setAdapter(new LecturersPagerAdapter(getSupportFragmentManager()));
-        //определяем фрагмент "вкладок"
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        //устанавливаем привязку к ранее объявленому пейджеру, чтоб они были связаны
-        tabLayout.setupWithViewPager(viewPager);
+        //слушатель нажатия на пункт списка расписания
+        lvSubjects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //создание интента для перехода из не активити
+                Intent intent = new Intent(Vars.getContext(), SubjectInfo.class);
+                intent.putExtra("id", listOfSubjects.get(position).getmId());
+                intent.putExtra("subjectKind", "ICS");
+                startActivity(intent);
+                }
+            }
+        );
+
+        fillList();
+
+        //назначаем адаптер для списка с расписанием
+        listAdapter = new SubjectsListAdapter(this.getApplicationContext(), listOfSubjects);
+        lvSubjects.setAdapter(listAdapter);
 
     }
 
+
+    //заполнение списка предметов
+    public void fillList(){
+        //очищаем от предыдущих данных, на случай обновления
+        listOfSubjects.clear();
+
+        Cursor cursor = db.getICSSubjects();
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    SubjectForSubjectsList subjectForSubjectsList = new SubjectForSubjectsList();
+
+                    subjectForSubjectsList.setmId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_ICS_SUBJECT_ID)));
+                    subjectForSubjectsList.setmTitle(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TITLE)));
+                    subjectForSubjectsList.setmLecturerId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
+                    subjectForSubjectsList.setmSemesters(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SEMESTERS)));
+                    subjectForSubjectsList.setmType(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_KIND)));
+                    subjectForSubjectsList.setmInfo(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_INFO)));
+                    subjectForSubjectsList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
+                    subjectForSubjectsList.setmSurname(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)));
+                    subjectForSubjectsList.setmPatronymic(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC)));
+
+                    listOfSubjects.add(subjectForSubjectsList);
+                } while (cursor.moveToNext());
+            }
+        } else {
+            Log.d(myLog, "Cursor is null");
+        }
+    }
 
 
 }

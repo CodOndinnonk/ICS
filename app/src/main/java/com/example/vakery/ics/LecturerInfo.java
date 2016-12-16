@@ -118,7 +118,7 @@ public class LecturerInfo extends AppCompatActivity {
 
     public void setInfo(){
 
-        Cursor cursor = db.getSubject(lecturerId);
+        Cursor cursor = db.getPersonalSubject(lecturerId);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

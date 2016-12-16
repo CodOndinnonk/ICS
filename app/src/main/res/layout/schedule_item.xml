@@ -24,7 +24,7 @@
             android:padding="5dp">
 
             <TextView
-                android:id="@+id/subjectName"
+                android:id="@+id/ICSSubjectName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -62,17 +62,17 @@
                 android:layout_alignBottom="@+id/numberOfSubject"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/subjectName"
+                android:layout_below="@+id/ICSSubjectName"
                 android:text="606ф"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#000000"
                 android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/typeOfSubject"
+                android:id="@+id/ICSSubjectKind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/subjectName"
+                android:layout_below="@+id/ICSSubjectName"
                 android:layout_toEndOf="@+id/numberOfSubject"
                 android:layout_toRightOf="@+id/numberOfSubject"
 
@@ -83,10 +83,10 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:id="@+id/subjectLecturer"
+                android:id="@+id/ICSSubjectLecturer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/typeOfSubject"
+                android:layout_below="@+id/ICSSubjectKind"
                 android:layout_toLeftOf="@+id/roomNumber"
 
                 android:layout_toStartOf="@+id/roomNumber"
@@ -103,8 +103,8 @@
                 android:id="@+id/subjectTime"
                 tools:text="10:00-11:00"
                 android:textColor="#a9a9a9"
-                android:layout_alignBaseline="@+id/subjectLecturer"
-                android:layout_alignBottom="@+id/subjectLecturer"
+                android:layout_alignBaseline="@+id/ICSSubjectLecturer"
+                android:layout_alignBottom="@+id/ICSSubjectLecturer"
                 android:layout_toRightOf="@+id/numberOfSubject"
                 android:layout_toEndOf="@+id/numberOfSubject" />
         </RelativeLayout>

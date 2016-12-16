@@ -1,7 +1,7 @@
 package Entities;
 
 
-public class SubjectForList {
+public class SubjectForScheduleList {
     public int mId;
     public int mNumberOfSubject;
     public String mType;
@@ -13,11 +13,11 @@ public class SubjectForList {
     public String mName;
     public String mPatronymic;
 
-    public SubjectForList() {
+    public SubjectForScheduleList() {
     }
 
-    public SubjectForList(int id, int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
-                          String surname, String name, String patronymic) {
+    public SubjectForScheduleList(int id, int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
+                                  String surname, String name, String patronymic) {
         this.mId = id;
         this.mNumberOfSubject = NSubject;
         this.mType = type;
@@ -30,8 +30,8 @@ public class SubjectForList {
         this.mPatronymic = patronymic;
     }
 
-    public SubjectForList(int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
-                          String surname, String name, String patronymic) {
+    public SubjectForScheduleList(int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
+                                  String surname, String name, String patronymic) {
         this.mNumberOfSubject = NSubject;
         this.mType = type;
         this.mRoom = room;
@@ -43,7 +43,7 @@ public class SubjectForList {
         this.mPatronymic = patronymic;
     }
 
-    public SubjectForList(int NSubject, String shortTitle) {
+    public SubjectForScheduleList(int NSubject, String shortTitle) {
         this.mNumberOfSubject = NSubject;
         this.mShortTitle = shortTitle;
     }

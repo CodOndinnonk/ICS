@@ -1,17 +1,11 @@
 package com.example.vakery.ics;
 
-        import android.annotation.TargetApi;
         import android.app.Activity;
         import android.content.Intent;
         import android.database.Cursor;
-        import android.os.Build;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.support.v7.widget.Toolbar;
-        import android.transition.Explode;
-        import android.transition.Fade;
-        import android.transition.Slide;
-        import android.transition.TransitionInflater;
         import android.util.Log;
         import android.view.View;
         import android.view.inputmethod.InputMethodManager;
@@ -28,14 +22,13 @@ package com.example.vakery.ics;
         import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
         import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
-        import Entities.SubjectForList;
-
 public class SubjectInfo extends AppCompatActivity {
     final String myLog = "myLog";
     DatabaseHandler db;
     int subjectId;
+    int kindOfSubject;//0-персональный предмет(из расписания), 1-предмет кафедры, взятый из списка всех предметов
     int lecturerId;
-    TextView subjectName, type, room, lecturerInfo;
+    TextView subjectName, lecturerInfo, type, roomOrSemesterText,roomOrSemester , extraInfoText, extraInfo ;
     private Drawer.Result drawerResult = null;
 
 
@@ -114,39 +107,71 @@ public class SubjectInfo extends AppCompatActivity {
 
         //заполнение полей
         subjectName = (TextView)findViewById(R.id.subjectInfoSubjectName);
-        type = (TextView)findViewById(R.id.subjectInfoType);
-        room = (TextView)findViewById(R.id.subjectInfoRoom);
         lecturerInfo = (TextView)findViewById(R.id.subjectInfoLecturer);
+        type = (TextView)findViewById(R.id.subjectInfoType);
+        roomOrSemesterText = (TextView)findViewById(R.id.subjectInfoRoomOrSemesterInfoText);
+        roomOrSemester = (TextView)findViewById(R.id.subjectInfoRoomOrSemester);
+        extraInfoText = (TextView)findViewById(R.id.subjectInfoExtraInfoText);
+        extraInfo = (TextView)findViewById(R.id.subjectInfoExtraInfo);
 
         lecturerInfo.setOnClickListener(onLecturerClickListener);
 
         db = new DatabaseHandler(this);
         Intent intent = getIntent();
         //извлекаем переданное id для получения данных
-        subjectId = intent.getIntExtra("id",999);
-
-        setInfo();
+        Cursor cursor = null;
+        if(intent.getStringExtra("subjectKind").equals("personal")) {
+            kindOfSubject = 0;//0-персональный предмет(из расписания)
+            roomOrSemesterText.setText(R.string.room_of_subject);
+            extraInfoText.setEnabled(false);
+            extraInfoText.setVisibility(View.INVISIBLE);
+            extraInfo.setEnabled(false);
+            extraInfo.setVisibility(View.INVISIBLE);
+            subjectId = intent.getIntExtra("id", 999);
+            Log.d(myLog,"SubjectInfo предмет = personal  id =" + subjectId);
+            cursor = db.getPersonalSubject(subjectId);
+        }else if(intent.getStringExtra("subjectKind").equals("ICS")){
+            kindOfSubject = 1;//1-предмет кафедры, взятый из списка всех предметов
+            roomOrSemesterText.setText(R.string.semesters);
+            extraInfoText.setEnabled(true);
+            extraInfoText.setVisibility(View.VISIBLE);
+            extraInfoText.setText(R.string.extra_info);
+            extraInfo.setEnabled(true);
+            extraInfo.setVisibility(View.VISIBLE);
+            subjectId = intent.getIntExtra("id", 999);
+            Log.d(myLog,"SubjectInfo предмет = ICS  id =" + subjectId);
+            cursor = db.getICSSubject(subjectId);
+        }
+        if(cursor != null)
+        setInfo(cursor);
     }
 
 
 
-
-
-    public void setInfo(){
-        Cursor cursor = db.getSubject(subjectId);
+    public void setInfo(Cursor cursor){
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    lecturerId = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID));
-
-                    subjectName.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_FULL_TITLE)));
-                    type.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
-                    room.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
-                    String lecturer = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)) + " " +
-                            cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)) + " " +
-                            cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC));
-                    lecturerInfo.setText(lecturer);
-
+                    if(kindOfSubject == 0) {//из расписания
+                        lecturerId = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID));
+                        subjectName.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_FULL_TITLE)));
+                        String lecturer = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)) + " " +
+                                cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)) + " " +
+                                cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC));
+                        lecturerInfo.setText(lecturer);
+                        type.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
+                        roomOrSemester.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
+                    }else if (kindOfSubject == 1) {//из списка всех предметов кафедры
+                        lecturerId = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID));
+                        subjectName.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TITLE)));
+                        String lecturer = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)) + " " +
+                                cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)) + " " +
+                                cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC));
+                        lecturerInfo.setText(lecturer);
+                        type.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_KIND)));
+                        roomOrSemester.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SEMESTERS)));
+                        extraInfo.setText(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_INFO)));
+                    }
                 } while (cursor.moveToNext());
             }
         } else {

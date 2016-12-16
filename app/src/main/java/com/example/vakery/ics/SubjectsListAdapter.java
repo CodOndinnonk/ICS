@@ -14,17 +14,18 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import Entities.Lecturer;
+import Entities.SubjectForSubjectsList;
 
-public class LecturersListAdapter extends BaseAdapter {
+public class SubjectsListAdapter extends BaseAdapter {
     Context mContext;
     LayoutInflater layoutInflater;
-    ArrayList<Lecturer> objects;
+    ArrayList<SubjectForSubjectsList> objects;
     final String myLog = "myLog";
 
 
-    LecturersListAdapter(Context contextGet, ArrayList<Lecturer> lecturers) {
+    SubjectsListAdapter(Context contextGet, ArrayList<SubjectForSubjectsList> subjects) {
         mContext = contextGet;
-        objects = lecturers;
+        objects = subjects;
 
         layoutInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,8 +46,8 @@ public class LecturersListAdapter extends BaseAdapter {
     }
 
     // предмет по позиции
-    Lecturer getLecturer(int position) {
-        return ((Lecturer) getItem(position));
+    SubjectForSubjectsList getSubject(int position) {
+        return ((SubjectForSubjectsList) getItem(position));
     }
 
     // id по позиции
@@ -62,21 +63,21 @@ public class LecturersListAdapter extends BaseAdapter {
         // используем созданные, но не используемые view
         View view = convertView;
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.lecturer_item, parent, false);
+            view = layoutInflater.inflate(R.layout.subject_item, parent, false);
         }
 
-        Lecturer lecturerByPosition = getLecturer(position);
+        SubjectForSubjectsList subjectByPosition = getSubject(position);
 
         // заполняем View в пункте списка данными из будильника
-       ImageView imageView = ((ImageView)view.findViewById(R.id.limageView));
-        ((TextView) view.findViewById(R.id.lSurname)).setText(lecturerByPosition.getmSurname());
-        ((TextView) view.findViewById(R.id.lName)).setText(lecturerByPosition.getmName());
-        ((TextView) view.findViewById(R.id.lPatronymic)).setText(lecturerByPosition.getmPatronymic());
-
-        Picasso.with(this.mContext) //передаем контекст приложения
-                .load( "https://avatanplus.com/files/resources/mid/569d18a44d31a15255a841dc.png") //адрес изображения
-                .into(imageView); //ссылка на ImageView
-
+        ((TextView) view.findViewById(R.id.ICSSubjectName)).setText(subjectByPosition.getmTitle());
+        String lecturer = subjectByPosition.getmSurname() + " " + subjectByPosition.getmName() + " " +
+                subjectByPosition.getmPatronymic();
+        ((TextView) view.findViewById(R.id.ICSSubjectLecturer)).setText(lecturer);
+        if(subjectByPosition.getmType() == 1) {
+            ((TextView) view.findViewById(R.id.ICSSubjectKind)).setText(Vars.getContext().getString(R.string.exam));
+        }else  if(subjectByPosition.getmType() == 0) {
+            ((TextView) view.findViewById(R.id.ICSSubjectKind)).setText(Vars.getContext().getString(R.string.credit));
+        }
         return view;
     }
 

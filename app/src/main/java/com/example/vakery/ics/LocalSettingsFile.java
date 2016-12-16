@@ -32,6 +32,15 @@ public  class LocalSettingsFile {
     }
 
 
+    public static void clearUserInfo(){
+        SharedPreferences.Editor editor = mSettings.edit();// вызов обьекта editor для измненения параметров настроек
+        editor.remove(APP_PREFERENCES_NAME);
+        editor.remove(APP_PREFERENCES_SURNAME);
+        editor.remove(APP_PREFERENCES_GROUP);
+        editor.apply();// метод, сохраняющий добавленные данные
+    }
+
+
     //проверка на наличие уже зарегастрированного пользователя
     public static boolean isUserInfo(){
         if (mSettings.contains(APP_PREFERENCES_NAME)){

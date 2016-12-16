@@ -53,7 +53,12 @@ public class FillDB {
     String[] timeStart = {"8:00", "9:50", "11:40", "13:30"};
     String[] timeFinish = {"9:35", "11:25", "13:15", "15:05"};
 
-
+    int[] ICSSubjId = {1,2};
+    String [] ICSTitle = {"Микропроцессорное программирование","Системный анализ"};
+    int[] ICSLect = {1,5};
+    String[] ICSSemesters = {"5,6","4"};
+    String[] ICSKind = {"экзамен", "зачет"};
+    String[] ICSInfo = {"123456789","http://studentsthebest.blogspot.com/p/blog-page_88.html"};
 
     public FillDB(SQLiteDatabase db){
         mdb = db;
@@ -72,8 +77,8 @@ public class FillDB {
            cv.put(dh.KEY_SUBJECT_ID, subjId[i]);
            cv.put(dh.KEY_SHORT_TITLE, shortName[i]);
            cv.put(dh.KEY_FULL_TITLE, fullName[i]);
-           cv.put(dh.KEY_LECTURER, teacherId[i]);
-           mdb.insert(dh.TABLE_SUBJECTS, null, cv);
+           cv.put(dh.KEY_PERSONAL_LECTURER, teacherId[i]);
+           mdb.insert(dh.TABLE_PERSONAL_SUBJECTS, null, cv);
        }
 
        // данные для таблицы расписание
@@ -110,21 +115,32 @@ public class FillDB {
            mdb.insert(dh.TABLE_TIME, null, cv);
        }
 
+       // данные для таблицы предметов ИКС
+       for (int i = 0; i < ICSSubjId.length; i++) {
+           cv.clear();
+           cv.put(dh.KEY_ICS_SUBJECT_ID, ICSSubjId[i]);
+           cv.put(dh.KEY_TITLE, ICSTitle[i]);
+           cv.put(dh.KEY_ICS_LECTURER, ICSLect[i]);
+           cv.put(dh.KEY_SEMESTERS, ICSSemesters[i]);
+           cv.put(dh.KEY_KIND, ICSKind[i]);
+           cv.put(dh.KEY_SUBJECT_INFO, ICSInfo[i]);
+           mdb.insert(dh.TABLE_ICS_SUBJECTS, null, cv);
+       }
 
 //проверка введенных данных
        Cursor c;
-       Log.d(myLog, "--- Table TABLE_WEEK ---");
-       c = mdb.query(dh.TABLE_WEEK, null, null, null, null, null, null);
-       logCursor(c);
-       c.close();
-       Log.d(myLog, "--- ---");
-       Log.d(myLog, "--- Table TABLE_SUBJECTS ---");
-       c = mdb.query(dh.TABLE_SUBJECTS, null, null, null, null, null, null);
-       logCursor(c);
-       c.close();
-       Log.d(myLog, "--- ---");
-       Log.d(myLog, "--- Table TABLE_LECTURERS ---");
-       c = mdb.query(dh.TABLE_LECTURERS, null, null, null, null, null, null);
+//       Log.d(myLog, "--- Table TABLE_WEEK ---");
+//       c = mdb.query(dh.TABLE_WEEK, null, null, null, null, null, null);
+//       logCursor(c);
+//       c.close();
+//       Log.d(myLog, "--- ---");
+//       Log.d(myLog, "--- Table TABLE_SUBJECTS ---");
+//       c = mdb.query(dh.TABLE_PERSONAL_SUBJECTS, null, null, null, null, null, null);
+//       logCursor(c);
+//       c.close();
+//       Log.d(myLog, "--- ---");
+       Log.d(myLog, "--- Table TABLE_ICS_SUBJECTS ---");
+       c = mdb.query(dh.TABLE_ICS_SUBJECTS, null, null, null, null, null, null);
        logCursor(c);
        c.close();
        Log.d(myLog, "--- ---");

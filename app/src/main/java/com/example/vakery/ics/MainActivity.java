@@ -1,14 +1,17 @@
 package com.example.vakery.ics;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -108,6 +112,13 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_exit))){
+                                prepareForExit();
+                            }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_subjects))){
+                                Intent intent = new Intent(getApplicationContext(), SubjectsActivity.class);
+                                startActivity(intent);
+                            }
 
  Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
@@ -160,6 +171,22 @@ public class MainActivity extends AppCompatActivity {
         Vars.fillTimeList(this);
 
         checkForInformation();
+    }
+
+
+    public void prepareForExit(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.drawer_item_exit)
+                .setMessage(R.string.asking_info_for_exit)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        LocalSettingsFile.clearUserInfo();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null);
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
@@ -252,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
            // super.onBackPressed();
         }
     }
+
 
     //переопреднеленный метод(стандартный не работает), который обновляет данные в страницах пейджера
     public void notifyAdapter(int position) {

@@ -20,21 +20,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import Entities.SubjectForList;
-import Entities.TimeSchedule;
-
-import static android.os.Build.ID;
+import Entities.SubjectForScheduleList;
 
 public class ScheduleListFragment extends Fragment {
     final String myLog = "myLog";
     ListView lvSchedule;
-    ArrayList<SubjectForList> listOfSubjects = new ArrayList<SubjectForList>();
+    ArrayList<SubjectForScheduleList> listOfSubjects = new ArrayList<SubjectForScheduleList>();
     ScheduleListAdapter listAdapter;
     ProgressBar progressBar;
     int pageNumber;//номер текущей стр пейджера
@@ -103,7 +98,7 @@ public class ScheduleListFragment extends Fragment {
         lvSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if ((listOfSubjects.get(position).getmShortTitle().equals(getString(R.string.no_lesson)))) {
+                    if ((listOfSubjects.get(position).getmShortTitle().length() < 0)) {
                         //если нажали на "нет пары"
                         Toast.makeText(getContext(), getString(R.string.no_lesson), Toast.LENGTH_SHORT).show();
                     }else {
@@ -112,6 +107,7 @@ public class ScheduleListFragment extends Fragment {
                         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         //передаем с интентом id выбранного предмета
                         dialogIntent.putExtra("id", listOfSubjects.get(position).getmSubjectId());
+                        dialogIntent.putExtra("subjectKind", "personal");
                         startActivity(dialogIntent);
                     }
                 }
@@ -153,19 +149,19 @@ public class ScheduleListFragment extends Fragment {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    SubjectForList subjectForList = new SubjectForList();
+                    SubjectForScheduleList subjectForScheduleList = new SubjectForScheduleList();
 
-                        subjectForList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT_WEEK)));
-                        subjectForList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
-                        subjectForList.setmRoom(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
-                        subjectForList.setmSubjectId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_ID)));
-                        subjectForList.setmShortTitle(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SHORT_TITLE)));
-                        subjectForList.setmLecturerId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
-                        subjectForList.setmSurname(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)));
-                        subjectForList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
-                        subjectForList.setmPatronymic(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC)));
+                        subjectForScheduleList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT_WEEK)));
+                        subjectForScheduleList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
+                        subjectForScheduleList.setmRoom(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ROOM_NUMBER)));
+                        subjectForScheduleList.setmSubjectId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_ID)));
+                        subjectForScheduleList.setmShortTitle(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SHORT_TITLE)));
+                        subjectForScheduleList.setmLecturerId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
+                        subjectForScheduleList.setmSurname(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)));
+                        subjectForScheduleList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
+                        subjectForScheduleList.setmPatronymic(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC)));
 
-                    listOfSubjects.add(subjectForList);
+                    listOfSubjects.add(subjectForScheduleList);
                 } while (cursor.moveToNext());
             }
         } else {
@@ -176,7 +172,7 @@ public class ScheduleListFragment extends Fragment {
 
         int flag =0;//переменная-счетчик для определения колва пройденных предметов
         //создаем временный список для модификаций, и в него клонируем основной список (клонируем, чтоб небыло привязки)
-        ArrayList<SubjectForList> forPrepare = (ArrayList<SubjectForList>) listOfSubjects.clone();
+        ArrayList<SubjectForScheduleList> forPrepare = (ArrayList<SubjectForScheduleList>) listOfSubjects.clone();
 
         //try потому, что не во все дни есть расписание и чтоб не выпадала ошибка
         try {
@@ -186,7 +182,7 @@ public class ScheduleListFragment extends Fragment {
                     listOfSubjects.add(forPrepare.get(flag));
                     flag++;//для перехода к следующему предмету
                 }else {//если номер пар не совал (к примеру у нас i=1 пара, а в списе первый элемент = 3 паре) то добавляем заглушку
-                    listOfSubjects.add(new SubjectForList(i,""));//заглушка с номером пары
+                    listOfSubjects.add(new SubjectForScheduleList(i,""));//заглушка с номером пары
                 }
                 //если мы просмотрели все предметы на день. считанные из бд, то выходим из цикла
                 if(flag == forPrepare.size()){
@@ -202,10 +198,10 @@ public class ScheduleListFragment extends Fragment {
 
 
     // класс реализующий сортировку обьектов по заданному полю
-    class MyComparator implements Comparator<SubjectForList> {
+    class MyComparator implements Comparator<SubjectForScheduleList> {
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
-        public int compare(SubjectForList o1, SubjectForList o2) {
+        public int compare(SubjectForScheduleList o1, SubjectForScheduleList o2) {
             return Integer.compare(o1.getmNumberOfSubject(), o2.getmNumberOfSubject());
         }
     }

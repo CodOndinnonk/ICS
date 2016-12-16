@@ -31,12 +31,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_CONTACTS = "Contacts";//название поля date
     public static final String KEY_ICS = "ICS";//название поля date
 
-
-    public static final String TABLE_SUBJECTS = "Subjects";//название таблицы
+    public static final String TABLE_PERSONAL_SUBJECTS = "Subjects";//название таблицы
     public static final String KEY_SUBJECT_ID = "Subject_id";//название поля id
     public static final String KEY_SHORT_TITLE = "Short_title";//название поля date
     public static final String KEY_FULL_TITLE = "Full_title";//название поля date
-    public static final String KEY_LECTURER = "Lecturer";//название поля date
+    public static final String KEY_PERSONAL_LECTURER = "Lecturer_personal";//название поля date
 
     public static final String TABLE_WEEK = "Week";//НЕЧЕТНАЯ
     public static final String KEY_KIND_OF_WEEK = "Kind_of_week";//1- нечетная, 2- четная, 3- все недели
@@ -63,6 +62,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_TIME_START = "Time_start";//название поля id
     public static final String KEY_TIME_FINISH = "Time_finish";//название поля id
 
+    public static final String TABLE_ICS_SUBJECTS = "ICS_subjects";//название таблицы
+    public static final String KEY_ICS_SUBJECT_ID = "ICS_subject_id";//название поля id
+    public static final String KEY_TITLE = "Title";//название поля id
+    public static final String KEY_ICS_LECTURER = "Lecturer_ICS";//название поля id
+    public static final String KEY_SEMESTERS = "Semesters";//название поля id
+    public static final String KEY_KIND = "Kind";//название поля id
+    public static final String KEY_SUBJECT_INFO = "Extra_info";//название поля id
 
 
 
@@ -89,14 +95,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         sqLiteDatabase.execSQL(CREATE_LECTURERS_TABLE);
 
-        String CREATE_SUBJECTS_TABLE = "CREATE TABLE " + TABLE_SUBJECTS +
+        String CREATE_PERSONAL_SUBJECTS_TABLE = "CREATE TABLE " + TABLE_PERSONAL_SUBJECTS +
                 "("
                 + KEY_SUBJECT_ID + " INTEGER NOT NULL PRIMARY KEY,"
                 + KEY_SHORT_TITLE + " TEXT,"
                 + KEY_FULL_TITLE + " TEXT,"
-                + KEY_LECTURER + " INTEGER"
+                + KEY_PERSONAL_LECTURER + " INTEGER"
                 + ")";
-        sqLiteDatabase.execSQL(CREATE_SUBJECTS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_PERSONAL_SUBJECTS_TABLE);
 
         String CREATE_WEEK_TABLE = "CREATE TABLE " + TABLE_WEEK +
                 "("
@@ -143,6 +149,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         sqLiteDatabase.execSQL(CREATE_TABLE_TIME);
 
+        String CREATE_ICS_SUBJECTS_TABLE = "CREATE TABLE " + TABLE_ICS_SUBJECTS +
+                "("
+                + KEY_ICS_SUBJECT_ID + " INTEGER NOT NULL PRIMARY KEY,"
+                + KEY_TITLE + " TEXT,"
+                + KEY_ICS_LECTURER + " INTEGER,"
+                + KEY_SEMESTERS + " TEXT,"
+                + KEY_KIND + " TEXT,"
+                + KEY_SUBJECT_INFO + " TEXT"
+                + ")";
+        sqLiteDatabase.execSQL(CREATE_ICS_SUBJECTS_TABLE);
+
         ////////////////////////////////////////////////////////////////////////////////
         //тестовая загрузка бд
        FillDB fillDB = new FillDB(sqLiteDatabase);
@@ -157,11 +174,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LECTURERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBJECTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_SUBJECTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VISITING);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MARKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WEEK);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICS_SUBJECTS);
         onCreate(db);
     }
 
@@ -177,7 +195,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " l.Lecturer_id, l.Surname, l.Name, l.Patronymic\n" +
                 "FROM Week w \n" +
                 "\tINNER JOIN Subjects s ON ( w.Subject = s.Subject_id  )  \n" +
-                "\t\tINNER JOIN Lecturers l ON ( s.Lecturer = l.Lecturer_id  )  \n" +
+                "\t\tINNER JOIN Lecturers l ON ( s.Lecturer_personal = l.Lecturer_id  )  \n" +
                 "WHERE w.Day_of_week = "+String.valueOf(day)+"\n" +
                 " AND\n" +
                 "\t (w.Kind_of_week = "+String.valueOf(kindOfWeek)+" OR\n" +
@@ -200,14 +218,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getSubject(int subjectId){
+    public Cursor getPersonalSubject(int subjectId){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
         Cursor cursor ;
 
         String sqlQuery = "SELECT s.Short_title, s.Full_title, l.Lecturer_id, l.Surname, l.Name, l.Patronymic, w.Type_of_subject, w.Room_number\n" +
                 "FROM Subjects s \n" +
-                "\tINNER JOIN Lecturers l ON ( s.Lecturer = l.Lecturer_id  )  \n" +
+                "\tINNER JOIN Lecturers l ON ( s.Lecturer_personal = l.Lecturer_id  )  \n" +
                 "\tINNER JOIN Week w ON ( s.Subject_id = w.Subject  )  \n" +
                 "WHERE s.Subject_id =  " + String.valueOf(subjectId) ;
 
@@ -218,6 +236,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getICSSubject(int subjectId){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT i.Title, i.Semesters, i.Kind, i.Extra_info, l.Lecturer_id, l.Surname, l.Name, l.Patronymic\n" +
+                "FROM ICS_subjects i \n" +
+                "\tINNER JOIN Lecturers l ON ( i.Lecturer_ICS = l.Lecturer_id  )  \n" +
+                "WHERE i.ICS_subject_id =   " + String.valueOf(subjectId) ;;
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
+
+
+    public Cursor getICSSubjects(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT i.ICS_subject_id, i.Title, i.Semesters, i.Kind, i.Extra_info, l.Lecturer_id, l.Surname, l.Name, l.Patronymic\n" +
+                "FROM ICS_subjects i \n" +
+                "\tINNER JOIN Lecturers l ON ( i.Lecturer_ICS = l.Lecturer_id  )";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
 
     public Cursor getAllLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
