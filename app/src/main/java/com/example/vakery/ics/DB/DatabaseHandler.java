@@ -8,7 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import Entities.Lecturer;
+import com.example.vakery.ics.Entities.Lecturer;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     final String myLog = "myLog";
@@ -81,7 +81,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-     //   Log.d(myLog, "onCreate DB");
         //создание строки, содержащей команда для создания БД
         String CREATE_LECTURERS_TABLE = "CREATE TABLE " + TABLE_LECTURERS +
                 "("
@@ -169,8 +168,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-
-
     //при обновлении таблицы
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -185,6 +182,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+//  РАСПИСАНИЕ  ////////////////////////////////////////////////////////////////////////////////////
+
+
+    //берем расписание на заданный день заанной недели
     public Cursor getSchedule(int kindOfWeek, int day){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -210,6 +211,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    // берем предмет из таблицы расписания
     public Cursor getPersonalSubject(int subjectId){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -228,6 +230,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+//  КАФЕДРА ИКС ////////////////////////////////////////////////////////////////////////////////////
+
+
+    //берем предмет из таблицы с всеми предметами кафедры ИКС
     public Cursor getICSSubject(int subjectId){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -246,6 +253,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    //берем все предметы из таблицы с всеми предметами кафедры ИКС
     public Cursor getICSSubjects(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -262,6 +270,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+//  ПРЕПОДАВАТЕЛИ  /////////////////////////////////////////////////////////////////////////////////
+
+
+    //берем всех преподавателей
     public Cursor getAllLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -277,22 +290,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getMarks(){
-        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
-        Cursor cursor ;
-
-        String sqlQuery = "SELECT m.Chapter1, m.Chapter2, s.Full_title\n" +
-                "FROM Marks m \n" +
-                "\tINNER JOIN Subjects s ON ( m.Subject = s.Subject_id  )  ";
-
-        cursor = db.rawQuery(sqlQuery, null);
-        logCursor(cursor);
-        db.close();
-        Log.d(logQuery, "--- END---");
-        return cursor;
-    }
-
+    //берем преподавателей, работающих на кафедре ИКС
     public Cursor getICSLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -309,6 +308,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+    //берем препоавателей со всех кафедр кроме ИКС
     public Cursor getNotICSLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -325,21 +326,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getTime(){
-        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
-        Cursor cursor ;
-
-        String sqlQuery = "SELECT * \n" +
-                "FROM Time";
-
-        cursor = db.rawQuery(sqlQuery, null);
-        logCursor(cursor);
-        db.close();
-        Log.d(logQuery, "--- END---");
-        return cursor;
-    }
-
+    //берем определенного преподавателя из всех
     public Lecturer getLecturer(int lecturerId) {
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor;
@@ -351,12 +339,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Lecturer lecturer = new Lecturer();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-             lecturer.setmId((cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID))));
-             lecturer.setmPhoto((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PHOTO_URL))));
-             lecturer.setmSurname((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME))));
-             lecturer.setmName((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME))));
-             lecturer.setmPatronymic((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC))));
-             lecturer.setmContacts((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_CONTACTS))));
+                lecturer.setmId((cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID))));
+                lecturer.setmPhoto((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PHOTO_URL))));
+                lecturer.setmSurname((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME))));
+                lecturer.setmName((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME))));
+                lecturer.setmPatronymic((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC))));
+                lecturer.setmContacts((cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_CONTACTS))));
             }
         } else {
             Log.d(myLog, "Cursor is null");
@@ -365,12 +353,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    //берем спикой id всех преподавателей, у которых есть ссылка на фотограцию, используется при скачивании
     public ArrayList<Integer> getLecturersId(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor ;
         String sqlQuery = "SELECT l.Lecturer_id\n" +
-                "FROM Lecturers l "
-                 ;
+                "FROM Lecturers l " +
+                "WHERE l.Photo_url IS NOT NULL "
+                ;
 
         cursor = db.rawQuery(sqlQuery, null);
         ArrayList<Integer> lecturersId = new ArrayList<>(cursor.getCount());
@@ -387,6 +377,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return lecturersId;
     }
 
+
+//  ОЦЕНКИ  ////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //берем все оценки
+    public Cursor getMarks(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT m.Chapter1, m.Chapter2, s.Full_title\n" +
+                "FROM Marks m \n" +
+                "\tINNER JOIN Subjects s ON ( m.Subject = s.Subject_id  )  ";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
+
+
+//  ВРЕМЯ  /////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //берем время начала и конца пар
+    public Cursor getTime(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT * \n" +
+                "FROM Time";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
 
 
     // вывод в лог данных из курсора
@@ -405,8 +435,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } else
             Log.d(logQuery, "Cursor is null");
     }
-
-
 
 
 }

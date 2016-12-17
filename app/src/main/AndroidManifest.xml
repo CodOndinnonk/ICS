@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SubjectInfo" />
-        <activity android:name=".LecturerInfo" />
+        <activity android:name=".SubjectInfoActivity" />
+        <activity android:name=".LecturerInfoActivity" />
         <activity android:name=".LecturersActivity" />
         <activity android:name=".SubjectsActivity" />
         <activity android:name=".MarksActivity"></activity>

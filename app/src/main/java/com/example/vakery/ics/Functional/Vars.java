@@ -1,4 +1,4 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.Functional;
 
 
 import android.content.Context;
@@ -11,10 +11,10 @@ import com.example.vakery.ics.DB.DatabaseHandler;
 import java.io.File;
 import java.util.ArrayList;
 
-import Entities.TimeSchedule;
+import com.example.vakery.ics.Entities.TimeSchedule;
 
 public  class Vars {
-
+//класс основных глобальных переменных приложения
     public static final String myLog = "myLog";
 
     private static Context context = null ;
@@ -27,15 +27,19 @@ public  class Vars {
     //список с временем начала и конца всех пар
     private  static ArrayList<TimeSchedule> listOfTime = new ArrayList<TimeSchedule>();
 
+    //путь к папке, в которой хранятся фотографии
     private static File imageFileDir;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //создание пути для хранения фото
     static {imageFileDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ICS");
           }
+
 
     public static Context getContext() {
         return context;
     }
+
 
     public static void setImageFileDir(File imageFileDir) {
         Vars.imageFileDir = imageFileDir;
@@ -46,22 +50,27 @@ public  class Vars {
         Vars.context = context;
     }
 
+
     public static File getImageFileDir() {
         return imageFileDir;
     }
+
 
     public static void setCurrentKindOfWeek(int setCurrentKindOfWeek) {
         Vars.currentKindOfWeek = setCurrentKindOfWeek;
         Log.d(myLog, "Vars.currentKindOfWeek = " + currentKindOfWeek);
     }
 
+
     public static void setListOfTime(ArrayList<TimeSchedule> listOfTime) {
         Vars.listOfTime = listOfTime;
     }
 
+
     public static ArrayList<TimeSchedule> getListOfTime() {
         return listOfTime;
     }
+
 
     public static void fillTimeList(Context context){
         DatabaseHandler db = new DatabaseHandler(context);
@@ -83,13 +92,12 @@ public  class Vars {
         }
     }
 
+
     //возвращает строку с временем начала и конца пары
     public static String getTimeInfo(int numberOfSubject){
         String result = "-";
         //поиск нужной нам пары в списке
         for (int i = 0; i < listOfTime.size(); i++){
-//            Log.d(myLog, "listOfTime.get(i).getmSubjectNumber() = " + listOfTime.get(i).getmSubjectNumber());
-//            Log.d(myLog, "numberOfSubject = " + numberOfSubject);
             if(listOfTime.get(i).getmSubjectNumber() == numberOfSubject){
                 result = listOfTime.get(i).getmStart() + " - " +
                         listOfTime.get(i).getmFinish();
@@ -98,7 +106,10 @@ public  class Vars {
         return result;
     }
 
+
     public static int getCurrentKindOfWeek() {
         return currentKindOfWeek;
     }
+
+
 }

@@ -1,14 +1,10 @@
 package com.example.vakery.ics;
 
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.os.Environment;
-import android.widget.Toast;
 
-import java.io.File;
+import com.example.vakery.ics.Functional.Vars;
 
 public  class LocalSettingsFile {
     public  static final String APP_PREFERENCES = "icsSettings";// это будет именем файла настроек
@@ -49,5 +45,6 @@ public  class LocalSettingsFile {
             return false;
         }
     }
+
 
 }

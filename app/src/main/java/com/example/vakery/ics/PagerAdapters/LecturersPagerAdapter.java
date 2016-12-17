@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.vakery.ics.LecturersListFragment;
 import com.example.vakery.ics.R;
-import com.example.vakery.ics.Vars;
+import com.example.vakery.ics.Functional.Vars;
 
 
 public class LecturersPagerAdapter extends FragmentPagerAdapter {
@@ -40,4 +40,6 @@ public class LecturersPagerAdapter extends FragmentPagerAdapter {
         // Generate title based on item position
         return tabTitles[position];
     }
+
+
 }

@@ -1,4 +1,4 @@
-package Entities;
+package com.example.vakery.ics.Entities;
 
 
 public class Mark {
@@ -8,23 +8,10 @@ public class Mark {
     public int mChapter1;
     public int mChapter2;
 
+
     public Mark(){
     }
 
-    public Mark(int id, int subject, String subjectName, int Chapter1, int Chapter2) {
-        this.mId = id;
-        this.mSubjectId = subject;
-        this.mSubjectName = mSubjectName;
-        this.mChapter1 = Chapter1;
-        this.mChapter2 = Chapter2;
-    }
-
-    public Mark(int subject, String subjectName, int Chapter1, int Chapter2) {
-        this.mSubjectId = subject;
-        this.mSubjectName = mSubjectName;
-        this.mChapter1 = Chapter1;
-        this.mChapter2 = Chapter2;
-    }
 
     public int getmSubjectId() {
         return mSubjectId;

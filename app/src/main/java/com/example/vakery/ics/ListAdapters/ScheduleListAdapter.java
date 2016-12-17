@@ -9,10 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.vakery.ics.R;
-import com.example.vakery.ics.Vars;
+import com.example.vakery.ics.Functional.Vars;
 
 import java.util.ArrayList;
-import Entities.SubjectForScheduleList;
+import com.example.vakery.ics.Entities.SubjectForScheduleList;
 
 public class ScheduleListAdapter extends BaseAdapter {
     Context mContext;
@@ -43,10 +43,12 @@ public class ScheduleListAdapter extends BaseAdapter {
         return objects.get(position);
     }
 
+
     // предмет по позиции
     SubjectForScheduleList getSubject(int position) {
         return ((SubjectForScheduleList) getItem(position));
     }
+
 
     // id по позиции
     @Override
@@ -85,10 +87,6 @@ public class ScheduleListAdapter extends BaseAdapter {
 
         return view;
     }
-
-
-
-
 
 
 }

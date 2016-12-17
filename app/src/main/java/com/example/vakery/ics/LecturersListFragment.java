@@ -14,11 +14,12 @@ import android.widget.ListView;
 
 
 import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.ListAdapters.LecturersListAdapter;
 
 import java.util.ArrayList;
 
-import Entities.Lecturer;
+import com.example.vakery.ics.Entities.Lecturer;
 
 public class LecturersListFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -58,7 +59,7 @@ public class LecturersListFragment extends Fragment {
         lvLecturers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent go = new Intent(Vars.getContext(), LecturerInfo.class);
+                Intent go = new Intent(Vars.getContext(), LecturerInfoActivity.class);
                 //передаем с интентом id выбранного преподавателя
                 go.putExtra("id", listOfLecturers.get(position).getmId());
                 startActivity(go);

@@ -21,13 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.ListAdapters.ScheduleListAdapter;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import Entities.SubjectForScheduleList;
+import com.example.vakery.ics.Entities.SubjectForScheduleList;
 
 public class ScheduleListFragment extends Fragment {
     final String myLog = "myLog";
@@ -106,7 +107,7 @@ public class ScheduleListFragment extends Fragment {
                         Toast.makeText(getContext(), getString(R.string.no_lesson), Toast.LENGTH_SHORT).show();
                     }else {
                         //создание интента для перехода из не активити
-                        dialogIntent = new Intent(getContext(), SubjectInfo.class);
+                        dialogIntent = new Intent(getContext(), SubjectInfoActivity.class);
                         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         //передаем с интентом id выбранного предмета
                         dialogIntent.putExtra("id", listOfSubjects.get(position).getmSubjectId());
@@ -132,7 +133,6 @@ public class ScheduleListFragment extends Fragment {
 
         return view;
     }
-
 
 
     //заполнение списка предметов
@@ -199,7 +199,6 @@ public class ScheduleListFragment extends Fragment {
     }
 
 
-
     // класс реализующий сортировку обьектов по заданному полю
     class MyComparator implements Comparator<SubjectForScheduleList> {
         @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -241,4 +240,6 @@ View.OnClickListener onButtonClickListener = new View.OnClickListener() {
         //мы получаем ссылку на активити, что позволяет потом вызывать нежные методы из MainActivity
         this.mActivity = (MainActivity) activity;
     }
+
+
 }

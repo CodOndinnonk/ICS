@@ -12,7 +12,7 @@ import com.example.vakery.ics.R;
 
 import java.util.ArrayList;
 
-import Entities.Mark;
+import com.example.vakery.ics.Entities.Mark;
 
 public class MarksListAdapter extends BaseAdapter {
     Context mContext;
@@ -43,10 +43,12 @@ public class MarksListAdapter extends BaseAdapter {
         return objects.get(position);
     }
 
+
     // предмет по позиции
     Mark getMark(int position) {
         return ((Mark) getItem(position));
     }
+
 
     // id по позиции
     @Override
@@ -74,10 +76,6 @@ public class MarksListAdapter extends BaseAdapter {
 
         return view;
     }
-
-
-
-
 
 
 }

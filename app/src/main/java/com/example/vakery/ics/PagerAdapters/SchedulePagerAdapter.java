@@ -50,4 +50,6 @@ public class SchedulePagerAdapter extends FragmentStatePagerAdapter {
         //вызов встроенного метода, сообщающего об изменении данных (обновляет пейджер)
         notifyDataSetChanged();
     }
+
+
 }

@@ -1,4 +1,4 @@
-package Entities;
+package com.example.vakery.ics.Entities;
 
 
 public class SubjectForScheduleList {
@@ -13,40 +13,16 @@ public class SubjectForScheduleList {
     public String mName;
     public String mPatronymic;
 
+
     public SubjectForScheduleList() {
     }
 
-    public SubjectForScheduleList(int id, int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
-                                  String surname, String name, String patronymic) {
-        this.mId = id;
-        this.mNumberOfSubject = NSubject;
-        this.mType = type;
-        this.mRoom = room;
-        this.mSubjectId = subjectId;
-        this.mShortTitle = shortTitle;
-        this.mLecturerId = lecturerId;
-        this.mSurname = surname;
-        this.mName = name;
-        this.mPatronymic = patronymic;
-    }
-
-    public SubjectForScheduleList(int NSubject, String type, String room, int subjectId, String shortTitle, int lecturerId,
-                                  String surname, String name, String patronymic) {
-        this.mNumberOfSubject = NSubject;
-        this.mType = type;
-        this.mRoom = room;
-        this.mSubjectId = subjectId;
-        this.mShortTitle = shortTitle;
-        this.mLecturerId = lecturerId;
-        this.mSurname = surname;
-        this.mName = name;
-        this.mPatronymic = patronymic;
-    }
 
     public SubjectForScheduleList(int NSubject, String shortTitle) {
         this.mNumberOfSubject = NSubject;
         this.mShortTitle = shortTitle;
     }
+
 
     public int getmNumberOfSubject() {
         return mNumberOfSubject;

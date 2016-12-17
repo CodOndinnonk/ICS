@@ -1,4 +1,4 @@
-package Entities;
+package com.example.vakery.ics.Entities;
 
 public class Lecturer {
     public int mId;
@@ -8,30 +8,16 @@ public class Lecturer {
     public String mPatronymic;
     public String mContacts;
 
+
     public Lecturer(){
     }
 
-    public Lecturer(int id, String Photo, String Surname, String Name, String Patronymic, String Contacts){
-        this.mId = id;
-        this.mPhoto = Photo;
-        this.mSurname = Surname;
-        this.mName = Name;
-        this.mPatronymic = Patronymic;
-        this.mContacts = Contacts;
-    }
 
     public Lecturer(int id, String Photo) {
         this.mId = id;
         this.mPhoto = Photo;
     }
 
-        public Lecturer(String Photo, String Surname, String Name, String Patronymic, String Contacts){
-        this.mPhoto = Photo;
-        this.mSurname = Surname;
-        this.mName = Name;
-        this.mPatronymic = Patronymic;
-        this.mContacts = Contacts;
-    }
 
     public int getmId() {
         return mId;

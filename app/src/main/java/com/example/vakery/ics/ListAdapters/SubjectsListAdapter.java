@@ -9,11 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.vakery.ics.R;
-import com.example.vakery.ics.Vars;
 
 import java.util.ArrayList;
 
-import Entities.SubjectForSubjectsList;
+import com.example.vakery.ics.Entities.SubjectForSubjectsList;
 
 public class SubjectsListAdapter extends BaseAdapter {
     Context mContext;
@@ -44,10 +43,12 @@ public class SubjectsListAdapter extends BaseAdapter {
         return objects.get(position);
     }
 
+
     // предмет по позиции
     SubjectForSubjectsList getSubject(int position) {
         return ((SubjectForSubjectsList) getItem(position));
     }
+
 
     // id по позиции
     @Override
@@ -76,10 +77,6 @@ public class SubjectsListAdapter extends BaseAdapter {
 
         return view;
     }
-
-
-
-
 
 
 }

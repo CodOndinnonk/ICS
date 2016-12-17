@@ -1,4 +1,4 @@
-package Entities;
+package com.example.vakery.ics.Entities;
 
 
 public class SubjectForSubjectsList {
@@ -12,21 +12,10 @@ public class SubjectForSubjectsList {
     public String mPatronymic;
     public String mInfo;
 
+
     public SubjectForSubjectsList() {
     }
 
-    public SubjectForSubjectsList(int id, String type, String title, int lecturerId, String semesters,
-                                  String surname, String name, String patronymic, String info) {
-        this.mId = id;
-        this.mType = type;
-        this.mTitle = title;
-        this.mLecturerId = lecturerId;
-        this.mSemesters = semesters;
-        this.mSurname = surname;
-        this.mName = name;
-        this.mPatronymic = patronymic;
-        this.mInfo = info;
-    }
 
     public String getmInfo() {
         return mInfo;
@@ -34,18 +23,6 @@ public class SubjectForSubjectsList {
 
     public void setmInfo(String mInfo) {
         this.mInfo = mInfo;
-    }
-
-    public SubjectForSubjectsList(String type, String title, int lecturerId, String semesters,
-                                  String surname, String name, String patronymic, String info) {
-        this.mType = type;
-        this.mTitle = title;
-        this.mLecturerId = lecturerId;
-        this.mSemesters = semesters;
-        this.mSurname = surname;
-        this.mName = name;
-        this.mPatronymic = patronymic;
-        this.mInfo = info;
     }
 
     public String getmSemesters() {

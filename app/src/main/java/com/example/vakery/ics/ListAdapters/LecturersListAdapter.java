@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import Entities.Lecturer;
+import com.example.vakery.ics.Entities.Lecturer;
 
 public class LecturersListAdapter extends BaseAdapter {
     Context mContext;
@@ -45,10 +45,12 @@ public class LecturersListAdapter extends BaseAdapter {
         return objects.get(position);
     }
 
+
     // предмет по позиции
     Lecturer getLecturer(int position) {
         return ((Lecturer) getItem(position));
     }
+
 
     // id по позиции
     @Override
@@ -80,10 +82,6 @@ public class LecturersListAdapter extends BaseAdapter {
 
         return view;
     }
-
-
-
-
 
 
 }

@@ -1,16 +1,14 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.Functional;
 
 
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.example.vakery.ics.R;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -19,28 +17,22 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import Entities.Lecturer;
+import com.example.vakery.ics.Entities.Lecturer;
 
 public class DownloadInfo {
     Context mContext;
     final String myLog = "myLog";
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+   //некорректная работа
     public DownloadInfo(Context context){
         mContext = context;
         prepareForLoadingImg();

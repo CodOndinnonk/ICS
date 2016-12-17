@@ -5,7 +5,7 @@
     android:id="@+id/activity_lecturer_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vakery.ics.LecturerInfo"
+    tools:context="com.example.vakery.ics.LecturerInfoActivity"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
