@@ -1,9 +1,12 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.PagerAdapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.vakery.ics.LecturersListFragment;
+import com.example.vakery.ics.R;
+import com.example.vakery.ics.Vars;
 
 
 public class LecturersPagerAdapter extends FragmentPagerAdapter {

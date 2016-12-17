@@ -1,4 +1,4 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.DB;
 
 
 import android.content.ContentValues;
@@ -59,6 +59,11 @@ public class FillDB {
     String[] ICSSemesters = {"5,6","4"};
     String[] ICSKind = {"экзамен", "зачет"};
     String[] ICSInfo = {"123456789","http://studentsthebest.blogspot.com/p/blog-page_88.html"};
+
+    int[] marksSubject = {1, 6};
+    int[] marks1 = {30, 40};
+    int[] marks2 = {40,40};
+
 
     public FillDB(SQLiteDatabase db){
         mdb = db;
@@ -127,6 +132,15 @@ public class FillDB {
            mdb.insert(dh.TABLE_ICS_SUBJECTS, null, cv);
        }
 
+       // данные для таблицы оценок
+       for (int i = 0; i < marksSubject.length; i++) {
+           cv.clear();
+           cv.put(dh.KEY_SUBJECT, marksSubject[i]);
+           cv.put(dh.KEY_1_CHAPTER, marks1[i]);
+           cv.put(dh.KEY_2_CHAPTER, marks2[i]);
+           mdb.insert(dh.TABLE_MARKS, null, cv);
+       }
+
 //проверка введенных данных
        Cursor c;
 //       Log.d(myLog, "--- Table TABLE_WEEK ---");
@@ -140,7 +154,7 @@ public class FillDB {
 //       c.close();
 //       Log.d(myLog, "--- ---");
        Log.d(myLog, "--- Table TABLE_ICS_SUBJECTS ---");
-       c = mdb.query(dh.TABLE_ICS_SUBJECTS, null, null, null, null, null, null);
+       c = mdb.query(dh.TABLE_MARKS, null, null, null, null, null, null);
        logCursor(c);
        c.close();
        Log.d(myLog, "--- ---");

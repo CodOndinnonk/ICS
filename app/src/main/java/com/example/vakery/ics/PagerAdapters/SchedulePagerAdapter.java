@@ -1,9 +1,11 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.PagerAdapters;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.vakery.ics.ScheduleListFragment;
 
 import java.util.ArrayList;
 

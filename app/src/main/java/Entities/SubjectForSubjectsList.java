@@ -4,7 +4,7 @@ package Entities;
 public class SubjectForSubjectsList {
     public int mId;
     public String mTitle;
-    public int mType;
+    public String mType;
     public int mLecturerId;
     public String mSemesters;
     public String mSurname;
@@ -15,7 +15,7 @@ public class SubjectForSubjectsList {
     public SubjectForSubjectsList() {
     }
 
-    public SubjectForSubjectsList(int id, int type, String title, int lecturerId, String semesters,
+    public SubjectForSubjectsList(int id, String type, String title, int lecturerId, String semesters,
                                   String surname, String name, String patronymic, String info) {
         this.mId = id;
         this.mType = type;
@@ -36,7 +36,7 @@ public class SubjectForSubjectsList {
         this.mInfo = mInfo;
     }
 
-    public SubjectForSubjectsList(int type, String title, int lecturerId, String semesters,
+    public SubjectForSubjectsList(String type, String title, int lecturerId, String semesters,
                                   String surname, String name, String patronymic, String info) {
         this.mType = type;
         this.mTitle = title;
@@ -76,11 +76,11 @@ public class SubjectForSubjectsList {
         this.mTitle = mTitle;
     }
 
-    public int getmType() {
+    public String getmType() {
         return mType;
     }
 
-    public void setmType(int mType) {
+    public void setmType(String mType) {
         this.mType = mType;
     }
 

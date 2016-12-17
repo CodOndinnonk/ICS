@@ -27,7 +27,8 @@
         <activity android:name=".SubjectInfo" />
         <activity android:name=".LecturerInfo" />
         <activity android:name=".LecturersActivity" />
-        <activity android:name=".SubjectsActivity"></activity>
+        <activity android:name=".SubjectsActivity" />
+        <activity android:name=".MarksActivity"></activity>
     </application>
 
 </manifest>

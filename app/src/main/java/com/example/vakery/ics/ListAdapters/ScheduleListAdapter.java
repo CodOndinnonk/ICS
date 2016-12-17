@@ -1,19 +1,18 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.ListAdapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.vakery.ics.R;
+import com.example.vakery.ics.Vars;
+
 import java.util.ArrayList;
 import Entities.SubjectForScheduleList;
-import Entities.SubjectForSubjectsList;
 
 public class ScheduleListAdapter extends BaseAdapter {
     Context mContext;
@@ -22,7 +21,7 @@ public class ScheduleListAdapter extends BaseAdapter {
     final String myLog = "myLog";
 
 
-    ScheduleListAdapter(Context contextGet, ArrayList<SubjectForScheduleList> subjects) {
+    public ScheduleListAdapter(Context contextGet, ArrayList<SubjectForScheduleList> subjects) {
         mContext = contextGet;
         objects = subjects;
 
@@ -71,14 +70,14 @@ public class ScheduleListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.numberOfSubject)).setText(String.valueOf(subjectByPosition.getmNumberOfSubject()));
         ((TextView) view.findViewById(R.id.ICSSubjectName)).setText(subjectByPosition.getmShortTitle());
         ((TextView) view.findViewById(R.id.roomNumber)).setText(subjectByPosition.getmRoom());
-        ((TextView) view.findViewById(R.id.ICSSubjectKind)).setText(subjectByPosition.getmType());
+        ((TextView) view.findViewById(R.id.ICSSubjectType)).setText(subjectByPosition.getmType());
 
         if(subjectByPosition.getmSurname() != null) {
             String lecturerInfo = subjectByPosition.getmSurname() + " " + String.valueOf(subjectByPosition.getmName().charAt(0)) +
                     ". " + String.valueOf(subjectByPosition.getmPatronymic().charAt(0)) + ".";
-            ((TextView) view.findViewById(R.id.ICSSubjectLecturer)).setText(lecturerInfo);
+            ((TextView) view.findViewById(R.id.ICSLecturer)).setText(lecturerInfo);
         }else {
-            ((TextView) view.findViewById(R.id.ICSSubjectLecturer)).setText("");
+            ((TextView) view.findViewById(R.id.ICSLecturer)).setText("");
 
         }
 

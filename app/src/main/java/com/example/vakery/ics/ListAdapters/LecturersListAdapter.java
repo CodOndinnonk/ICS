@@ -1,4 +1,4 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.ListAdapters;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.vakery.ics.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class LecturersListAdapter extends BaseAdapter {
     final String myLog = "myLog";
 
 
-    LecturersListAdapter(Context contextGet, ArrayList<Lecturer> lecturers) {
+    public LecturersListAdapter(Context contextGet, ArrayList<Lecturer> lecturers) {
         mContext = contextGet;
         objects = lecturers;
 

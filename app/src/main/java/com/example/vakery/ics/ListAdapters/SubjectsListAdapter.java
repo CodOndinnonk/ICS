@@ -1,4 +1,4 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.ListAdapters;
 
 
 import android.content.Context;
@@ -6,14 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.example.vakery.ics.R;
+import com.example.vakery.ics.Vars;
 
 import java.util.ArrayList;
 
-import Entities.Lecturer;
 import Entities.SubjectForSubjectsList;
 
 public class SubjectsListAdapter extends BaseAdapter {
@@ -23,7 +22,7 @@ public class SubjectsListAdapter extends BaseAdapter {
     final String myLog = "myLog";
 
 
-    SubjectsListAdapter(Context contextGet, ArrayList<SubjectForSubjectsList> subjects) {
+    public SubjectsListAdapter(Context contextGet, ArrayList<SubjectForSubjectsList> subjects) {
         mContext = contextGet;
         objects = subjects;
 
@@ -72,12 +71,9 @@ public class SubjectsListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.ICSSubjectName)).setText(subjectByPosition.getmTitle());
         String lecturer = subjectByPosition.getmSurname() + " " + subjectByPosition.getmName() + " " +
                 subjectByPosition.getmPatronymic();
-        ((TextView) view.findViewById(R.id.ICSSubjectLecturer)).setText(lecturer);
-        if(subjectByPosition.getmType() == 1) {
-            ((TextView) view.findViewById(R.id.ICSSubjectKind)).setText(Vars.getContext().getString(R.string.exam));
-        }else  if(subjectByPosition.getmType() == 0) {
-            ((TextView) view.findViewById(R.id.ICSSubjectKind)).setText(Vars.getContext().getString(R.string.credit));
-        }
+        ((TextView) view.findViewById(R.id.ICSLecturer)).setText(lecturer);
+        ((TextView) view.findViewById(R.id.ICSSubjectType)).setText(subjectByPosition.getmType());
+
         return view;
     }
 

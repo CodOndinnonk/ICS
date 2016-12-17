@@ -2,8 +2,7 @@ package com.example.vakery.ics;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,10 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
-import com.example.vakery.ics.PagerAdapters.LecturersPagerAdapter;
+import com.example.vakery.ics.ListAdapters.MarksListAdapter;
+import com.example.vakery.ics.ListAdapters.SubjectsListAdapter;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -24,18 +25,27 @@ import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
-public class LecturersActivity extends AppCompatActivity {
-    private Drawer.Result drawerResult = null;
+import java.util.ArrayList;
+
+import Entities.Mark;
+import Entities.SubjectForSubjectsList;
+
+public class MarksActivity extends AppCompatActivity {
     final String myLog = "myLog";
     DatabaseHandler db;
+    private Drawer.Result drawerResult = null;
+    ListView lvMarks;
+    ArrayList<Mark> listOfMarks = new ArrayList<Mark>();
+    MarksListAdapter listAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lecturers);
+        setContentView(R.layout.activity_marks);
 
         // Инициализируем Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -63,8 +73,8 @@ public class LecturersActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         // Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) LecturersActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(LecturersActivity.this.getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager inputMethodManager = (InputMethodManager) MarksActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(MarksActivity.this.getCurrentFocus().getWindowToken(), 0);
                     }
                     @Override
                     public void onDrawerClosed(View drawerView) {
@@ -83,8 +93,11 @@ public class LecturersActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_exit))){
+                                //  prepareForExit();
+                            }
 
-    Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -107,25 +120,46 @@ public class LecturersActivity extends AppCompatActivity {
                     // Обработка длинного клика, например, только для SecondaryDrawerItem
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof SecondaryDrawerItem) {
-                            Toast.makeText(LecturersActivity.this, LecturersActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MarksActivity.this, MarksActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
                         return false;
                     }
                 })
                 .build();
 
+        lvMarks = (ListView)findViewById(R.id.listViewOfMarks);
 
-        // определяем фрагмент для пейджера
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        //ставим адаптер на пейджер
-        viewPager.setAdapter(new LecturersPagerAdapter(getSupportFragmentManager()));
-        //определяем фрагмент "вкладок"
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        //устанавливаем привязку к ранее объявленому пейджеру, чтоб они были связаны
-        tabLayout.setupWithViewPager(viewPager);
+        fillList();
 
+        //назначаем адаптер для списка с расписанием
+        listAdapter = new MarksListAdapter(this.getApplicationContext(), listOfMarks);
+        lvMarks.setAdapter(listAdapter);
     }
 
+
+    //заполнение списка предметов
+    public void fillList(){
+        //очищаем от предыдущих данных, на случай обновления
+        listOfMarks.clear();
+
+        Cursor cursor = db.getMarks();
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Mark markForMarksList = new Mark();
+
+                    markForMarksList.setmSubjectName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_FULL_TITLE)));
+                    markForMarksList.setmChapter1(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_1_CHAPTER)));
+                    markForMarksList.setmChapter2(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_2_CHAPTER)));
+
+                    listOfMarks.add(markForMarksList);
+                } while (cursor.moveToNext());
+            }
+        } else {
+            Log.d(myLog, "Cursor is null");
+        }
+    }
 
 
 }

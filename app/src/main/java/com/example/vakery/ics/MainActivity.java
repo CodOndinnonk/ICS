@@ -1,7 +1,6 @@
 package com.example.vakery.ics;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
+import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.PagerAdapters.SchedulePagerAdapter;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import Entities.Lecturer;
+import Entities.Mark;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -117,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_subjects))){
                                 Intent intent = new Intent(getApplicationContext(), SubjectsActivity.class);
+                                startActivity(intent);
+                            }
+                            if(getApplicationContext().getString(((Nameable) drawerItem).getNameRes()).equals(getString(R.string.drawer_item_marks))){
+                                Intent intent = new Intent(getApplicationContext(), MarksActivity.class);
                                 startActivity(intent);
                             }
 

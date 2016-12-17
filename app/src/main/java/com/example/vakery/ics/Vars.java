@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.vakery.ics.DB.DatabaseHandler;
+
 import java.io.File;
 import java.util.ArrayList;
 

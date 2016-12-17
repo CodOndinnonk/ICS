@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.vakery.ics.MarksActivity"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:transitionName="actionBar"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:textColor="@android:color/black"
+        android:textSize="16dp"
+        android:textAlignment="center"
+        android:background="@android:color/background_light"
+        android:text="@string/current_marks" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="horizontal"
+        android:background="@android:color/background_light">
+
+        <TextView
+            android:id="@+id/ICSSubjectName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/subject_name"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/ICSLecturer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/semester_1"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:layout_weight="2"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/mark2Semester"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/semester_2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:layout_weight="2"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/ICSSubjectType"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/sum_sign"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:layout_weight="2"
+            android:textAlignment="center"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listViewOfMarks"
+        android:dividerHeight="0dp"
+        android:divider="@android:color/transparent"
+        android:background="@android:color/background_light"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</LinearLayout>

@@ -13,6 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
+import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.ListAdapters.LecturersListAdapter;
+
 import java.util.ArrayList;
 
 import Entities.Lecturer;

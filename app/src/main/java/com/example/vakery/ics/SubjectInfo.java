@@ -13,6 +13,7 @@ package com.example.vakery.ics;
         import android.widget.TextView;
         import android.widget.Toast;
 
+        import com.example.vakery.ics.DB.DatabaseHandler;
         import com.mikepenz.iconics.typeface.FontAwesome;
         import com.mikepenz.materialdrawer.Drawer;
         import com.mikepenz.materialdrawer.model.DividerDrawerItem;

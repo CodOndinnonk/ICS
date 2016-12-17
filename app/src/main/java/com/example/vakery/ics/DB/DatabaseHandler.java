@@ -1,4 +1,4 @@
-package com.example.vakery.ics;
+package com.example.vakery.ics.DB;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -119,6 +119,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_MARKS_TABLE = "CREATE TABLE " + TABLE_MARKS +
                 "("
                 + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
+                + KEY_SUBJECT + " INTEGER,"
                 + KEY_1_CHAPTER + " INTEGER,"
                 + KEY_2_CHAPTER + " INTEGER"
                 + ")";
@@ -201,15 +202,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "\t (w.Kind_of_week = "+String.valueOf(kindOfWeek)+" OR\n" +
                 "\tw.Kind_of_week = 3)\n" ;
 
-//
-//        String sqlQuery = "SELECT w.Number_of_subject, w.Type_of_subject, w.Room_number, s.Short_title, s.Full_title, l.id as lecturerId, l.Surname, l.Name, l.Patronymic \n" +
-//                "FROM Week w \n" +
-//                "INNER JOIN Subjects s ON ( w.Subject = s.id  )  \n" +
-//                "\t\tINNER JOIN Lecturers l ON ( s.Lecturer = l.id  )  \n" +
-//                "WHERE w.Day_of_week = "+String.valueOf(day)+" AND\n" +
-//                "\t(w.Kind_of_week = "+String.valueOf(kindOfWeek)+" OR\n" +
-//                "\tw.Kind_of_week = 3)" ;
-
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);
         db.close();
@@ -277,6 +269,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String sqlQuery = "SELECT * \n" +
                 "FROM Lecturers l";
+
+        cursor = db.rawQuery(sqlQuery, null);
+        logCursor(cursor);
+        db.close();
+        Log.d(logQuery, "--- END---");
+        return cursor;
+    }
+
+    public Cursor getMarks(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+
+        Cursor cursor ;
+
+        String sqlQuery = "SELECT m.Chapter1, m.Chapter2, s.Full_title\n" +
+                "FROM Marks m \n" +
+                "\tINNER JOIN Subjects s ON ( m.Subject = s.Subject_id  )  ";
 
         cursor = db.rawQuery(sqlQuery, null);
         logCursor(cursor);

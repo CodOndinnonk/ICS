@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.ListAdapters.SubjectsListAdapter;
 import com.mikepenz.iconics.typeface.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -23,9 +25,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import Entities.SubjectForScheduleList;
 import Entities.SubjectForSubjectsList;
 
 public class SubjectsActivity extends AppCompatActivity {
@@ -166,7 +166,7 @@ public class SubjectsActivity extends AppCompatActivity {
                     subjectForSubjectsList.setmTitle(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TITLE)));
                     subjectForSubjectsList.setmLecturerId(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
                     subjectForSubjectsList.setmSemesters(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SEMESTERS)));
-                    subjectForSubjectsList.setmType(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_KIND)));
+                    subjectForSubjectsList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_KIND)));
                     subjectForSubjectsList.setmInfo(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SUBJECT_INFO)));
                     subjectForSubjectsList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
                     subjectForSubjectsList.setmSurname(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_SURNAME)));
