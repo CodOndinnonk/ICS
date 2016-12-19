@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.Functional.MyToolbar;
+import com.example.vakery.ics.Functional.Vars;
 
 public class LecturerInfoActivity extends AppCompatActivity {
     final String myLog = "myLog";
@@ -16,6 +17,8 @@ public class LecturerInfoActivity extends AppCompatActivity {
     int lecturerId;
     TextView lecturerName, lecturerContacts;
     MyToolbar toolbar;
+    //название активити отображаемое в Toolbar
+    String activityTitle = Vars.getContext().getString(R.string.detail_information_text);
 
 
     @Override
@@ -24,7 +27,7 @@ public class LecturerInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lecturer_info);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this);
+        toolbar = new MyToolbar(this,activityTitle);
 
         //заполнение полей
         lecturerName = (TextView)findViewById(R.id.lecturerInfoName);

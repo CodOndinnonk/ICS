@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.Functional.MyToolbar;
+import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.PagerAdapters.LecturersPagerAdapter;
 
 
@@ -14,6 +15,9 @@ public class LecturersActivity extends AppCompatActivity {
     final String myLog = "myLog";
     DatabaseHandler db;
     MyToolbar toolbar;
+    //название активити отображаемое в Toolbar
+    String activityTitle = Vars.getContext().getString(R.string.drawer_item_lectors);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +25,7 @@ public class LecturersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lecturers);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this);
+        toolbar = new MyToolbar(this,activityTitle);
 
         db = new DatabaseHandler(this);
 

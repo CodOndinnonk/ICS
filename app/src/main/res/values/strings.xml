@@ -14,6 +14,7 @@
     <string name="drawer_item_programs">Программы</string>
     <string name="drawer_item_exit">Выход</string>
     <string name="drawer_item_info">Справка</string>
+    <string name="detail_information_text">Подробная информация</string>
 
     <string name="week_odd">нечет.</string>
     <string name="week_even">чет.</string>

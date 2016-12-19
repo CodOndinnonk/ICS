@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.Functional.MyToolbar;
+import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.ListAdapters.MarksListAdapter;
 
 
@@ -22,6 +23,8 @@ public class MarksActivity extends AppCompatActivity {
     ArrayList<Mark> listOfMarks = new ArrayList<Mark>();
     MarksListAdapter listAdapter;
     MyToolbar toolbar;
+    //название активити отображаемое в Toolbar
+    String activityTitle = Vars.getContext().getString(R.string.drawer_item_marks);
 
 
     @Override
@@ -30,7 +33,7 @@ public class MarksActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marks);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this);
+        toolbar = new MyToolbar(this,activityTitle);
 
         db = new DatabaseHandler(this);
 

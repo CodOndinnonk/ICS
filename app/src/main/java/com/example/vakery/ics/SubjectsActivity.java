@@ -26,6 +26,9 @@ public class SubjectsActivity extends AppCompatActivity {
     ArrayList<SubjectForSubjectsList> listOfSubjects = new ArrayList<SubjectForSubjectsList>();
     SubjectsListAdapter listAdapter;
     MyToolbar toolbar;
+    //название активити отображаемое в Toolbar
+    String activityTitle = Vars.getContext().getString(R.string.drawer_item_subjects);
+
 
 
     @Override
@@ -34,7 +37,7 @@ public class SubjectsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subjects);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this);
+        toolbar = new MyToolbar(this,activityTitle);
 
         db = new DatabaseHandler(this);
 

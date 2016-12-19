@@ -4,13 +4,18 @@ package com.example.vakery.ics.Functional;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 import com.example.vakery.ics.LecturersActivity;
 import com.example.vakery.ics.LocalSettingsFile;
@@ -34,11 +39,28 @@ public class MyToolbar  {
 
 
     //создание Toolbar(меню), используемого на всех активити
-    public MyToolbar(final Activity activity){
+    public MyToolbar(final Activity activity, String title )  {
         mActivity = activity;
 
         // Инициализируем Toolbar, mActivity.findViewById потому, то ищем в определенном активити(его передаем в конструктор)
         Toolbar toolbar = (Toolbar) mActivity.findViewById(R.id.toolbar);
+        //устанавливаем название активити(передается в конструктор)
+        toolbar.setTitle(title);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+        //добавляем кнопку "обновить"
+        Button refreshButton = new Button(Vars.getContext());
+        refreshButton.setBackgroundColor(Color.RED);
+        refreshButton.setText("123");
+                toolbar.addView(refreshButton);
+
+//        MenuInflater inflater = activity.getMenuInflater();
+//        inflater.inflate(R.menu.game_menu, menu);
+//
+//        toolbar.setMenu();
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
         //((AppCompatActivity) mActivity), так как мы не в активити, и нужно получить методы активити, поэтому приводим переданную активность к AppCompatActivity
         ((AppCompatActivity) mActivity).setSupportActionBar(toolbar);
         ((AppCompatActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,7 +75,7 @@ public class MyToolbar  {
                         new PrimaryDrawerItem().withName(R.string.drawer_item_notifications).withIcon(FontAwesome.Icon.faw_bell).withBadge("1").withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_schedule).withIcon(FontAwesome.Icon.faw_tasks),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_marks).withIcon(FontAwesome.Icon.faw_file),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_visiting).withIcon(FontAwesome.Icon.faw_eye),
+                        // new PrimaryDrawerItem().withName(R.string.drawer_item_visiting).withIcon(FontAwesome.Icon.faw_eye),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_lectors).withIcon(FontAwesome.Icon.faw_male),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_subjects).withIcon(FontAwesome.Icon.faw_university),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_programs).withIcon(FontAwesome.Icon.faw_keyboard_o),
@@ -127,6 +149,8 @@ public class MyToolbar  {
                 })
                 .build();
     }
+
+
 
 
     //срабатывает принажатии "ВЫХОД", выводится диалог с подтверждением удаления данных

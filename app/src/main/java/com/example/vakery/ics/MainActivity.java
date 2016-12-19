@@ -51,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
             myDialogFragment.show(transaction, "dialog");
         }else {}
 
+        //название активити отображаемое в Toolbar
+        String activityTitle = getString(R.string.drawer_item_schedule);
+
         //создание Toolbar
-        toolbar = new MyToolbar(this);
+        toolbar = new MyToolbar(this,activityTitle);
 
         db = new DatabaseHandler(this);
 
