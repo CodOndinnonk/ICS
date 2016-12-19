@@ -2,7 +2,6 @@ package com.example.vakery.ics;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -11,12 +10,11 @@ import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.Functional.MyToolbar;
 import com.example.vakery.ics.Functional.Vars;
 
-public class LecturerInfoActivity extends AppCompatActivity {
+public class LecturerInfoActivity extends MyToolbar {
     final String myLog = "myLog";
     DatabaseHandler db;
     int lecturerId;
     TextView lecturerName, lecturerContacts;
-    MyToolbar toolbar;
     //название активити отображаемое в Toolbar
     String activityTitle = Vars.getContext().getString(R.string.detail_information_text);
 
@@ -26,8 +24,8 @@ public class LecturerInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturer_info);
 
-        //создание Toolbar
-        toolbar = new MyToolbar(this,activityTitle);
+//        //создание Toolbar
+        this.createToolbar(activityTitle);
 
         //заполнение полей
         lecturerName = (TextView)findViewById(R.id.lecturerInfoName);
@@ -58,16 +56,6 @@ public class LecturerInfoActivity extends AppCompatActivity {
             }
         } else {
             Log.d(myLog, "Cursor is null");
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        // сообщаем в MyToolbar что нажали НАЗАД, если меню открыто, то оно свернется и вернет false, если меню не открыто, то вернется true
-        if(toolbar.onBackPressed()){
-            //если менб небыло открыто(выполняем действие НАЗАД)
-            super.onBackPressed();
         }
     }
 

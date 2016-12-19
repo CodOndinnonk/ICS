@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,13 +25,12 @@ import java.util.Calendar;
 import com.example.vakery.ics.Entities.Lecturer;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MyToolbar {//наследуемся от MyToolbar, он выполняет все от AppCompatActivity и имеет метод создания Toolbar(createToolbar(String title))
     final String myLog = "myLog";
     DatabaseHandler db;
     FragmentTransaction fragmentTransaction;
     ViewPager pager;
     private SchedulePagerAdapter adapter;
-    MyToolbar toolbar;
 
 
     @Override
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         String activityTitle = getString(R.string.drawer_item_schedule);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this,activityTitle);
+        this.createToolbar(activityTitle);
 
         db = new DatabaseHandler(this);
 
@@ -157,16 +155,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
-    }
-
-
-    @Override
-    public void onBackPressed() {
-            // сообщаем в MyToolbar что нажали НАЗАД, если меню открыто, то оно свернется и вернет false, если меню не открыто, то вернется true
-            if(toolbar.onBackPressed()){
-                //если менб небыло открыто(выполняем действие НАЗАД)
-                super.onBackPressed();
-            }
     }
 
 

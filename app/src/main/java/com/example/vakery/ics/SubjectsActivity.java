@@ -2,7 +2,6 @@ package com.example.vakery.ics;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,13 +18,12 @@ import java.util.ArrayList;
 
 import com.example.vakery.ics.Entities.SubjectForSubjectsList;
 
-public class SubjectsActivity extends AppCompatActivity {
+public class SubjectsActivity extends MyToolbar {
     final String myLog = "myLog";
     DatabaseHandler db;
     ListView lvSubjects;
     ArrayList<SubjectForSubjectsList> listOfSubjects = new ArrayList<SubjectForSubjectsList>();
     SubjectsListAdapter listAdapter;
-    MyToolbar toolbar;
     //название активити отображаемое в Toolbar
     String activityTitle = Vars.getContext().getString(R.string.drawer_item_subjects);
 
@@ -37,7 +35,7 @@ public class SubjectsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subjects);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this,activityTitle);
+        this.createToolbar(activityTitle);
 
         db = new DatabaseHandler(this);
 
@@ -92,16 +90,6 @@ public class SubjectsActivity extends AppCompatActivity {
             }
         } else {
             Log.d(myLog, "Cursor is null");
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        // сообщаем в MyToolbar что нажали НАЗАД, если меню открыто, то оно свернется и вернет false, если меню не открыто, то вернется true
-        if(toolbar.onBackPressed()){
-            //если менб небыло открыто(выполняем действие НАЗАД)
-            super.onBackPressed();
         }
     }
 

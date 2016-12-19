@@ -52,6 +52,8 @@
     <string name="credit">Зачет</string>
     <string name="exam">Экзамен</string>
 
+    <string name="refresh_text">Обновить</string>
+
 
     <string name="action_settings">Settings</string>
 </resources>

@@ -1,28 +1,24 @@
 package com.example.vakery.ics;
 
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-
 import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.Functional.MyToolbar;
 import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.ListAdapters.MarksListAdapter;
 
-
 import java.util.ArrayList;
 
 import com.example.vakery.ics.Entities.Mark;
 
-public class MarksActivity extends AppCompatActivity {
+public class MarksActivity extends MyToolbar {
     final String myLog = "myLog";
     DatabaseHandler db;
     ListView lvMarks;
     ArrayList<Mark> listOfMarks = new ArrayList<Mark>();
     MarksListAdapter listAdapter;
-    MyToolbar toolbar;
     //название активити отображаемое в Toolbar
     String activityTitle = Vars.getContext().getString(R.string.drawer_item_marks);
 
@@ -33,7 +29,7 @@ public class MarksActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marks);
 
         //создание Toolbar
-        toolbar = new MyToolbar(this,activityTitle);
+        this.createToolbar(activityTitle);
 
         db = new DatabaseHandler(this);
 
@@ -68,16 +64,6 @@ public class MarksActivity extends AppCompatActivity {
             }
         } else {
             Log.d(myLog, "Cursor is null");
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        // сообщаем в MyToolbar что нажали НАЗАД, если меню открыто, то оно свернется и вернет false, если меню не открыто, то вернется true
-        if(toolbar.onBackPressed()){
-            //если менб небыло открыто(выполняем действие НАЗАД)
-            super.onBackPressed();
         }
     }
 

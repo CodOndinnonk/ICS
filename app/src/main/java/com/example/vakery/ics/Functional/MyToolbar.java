@@ -4,18 +4,15 @@ package com.example.vakery.ics.Functional;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Toast;
 import com.example.vakery.ics.LecturersActivity;
 import com.example.vakery.ics.LocalSettingsFile;
@@ -32,42 +29,24 @@ import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
-public class MyToolbar  {
+public class MyToolbar extends AppCompatActivity {//наследуемся от AppCompatActivity для того, чтоб можно было определить все методы активити(создание меню,"назад"...)
     final String myLog = "myLog";
     private Drawer.Result drawerResult = null;
-    Activity mActivity;
 
 
     //создание Toolbar(меню), используемого на всех активити
-    public MyToolbar(final Activity activity, String title )  {
-        mActivity = activity;
+    public void createToolbar(String title)  {
 
         // Инициализируем Toolbar, mActivity.findViewById потому, то ищем в определенном активити(его передаем в конструктор)
-        Toolbar toolbar = (Toolbar) mActivity.findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //устанавливаем название активити(передается в конструктор)
         toolbar.setTitle(title);
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-        //добавляем кнопку "обновить"
-        Button refreshButton = new Button(Vars.getContext());
-        refreshButton.setBackgroundColor(Color.RED);
-        refreshButton.setText("123");
-                toolbar.addView(refreshButton);
-
-//        MenuInflater inflater = activity.getMenuInflater();
-//        inflater.inflate(R.menu.game_menu, menu);
-//
-//        toolbar.setMenu();
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-        //((AppCompatActivity) mActivity), так как мы не в активити, и нужно получить методы активити, поэтому приводим переданную активность к AppCompatActivity
-        ((AppCompatActivity) mActivity).setSupportActionBar(toolbar);
-        ((AppCompatActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Инициализируем Navigation Drawer
         drawerResult = new Drawer()
-                .withActivity(activity)
+                .withActivity(this)
                 .withToolbar(toolbar)
                 .withActionBarDrawerToggle(true)
                 .withHeader(R.layout.drawer_header)
@@ -87,8 +66,8 @@ public class MyToolbar  {
                     @Override
                     public void onDrawerOpened(View drawerView) {
                         // Скрываем клавиатуру при открытии Navigation Drawer
-                        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     }
                     @Override
                     public void onDrawerClosed(View drawerView) {
@@ -151,11 +130,9 @@ public class MyToolbar  {
     }
 
 
-
-
     //срабатывает принажатии "ВЫХОД", выводится диалог с подтверждением удаления данных
     public void prepareForExit(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.drawer_item_exit)
                 .setMessage(R.string.asking_info_for_exit)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -169,17 +146,37 @@ public class MyToolbar  {
     }
 
 
-    //метод, вызывается в активити для сворачивания меню по нажаию НАЗАД, если оно открыто
-    public boolean onBackPressed(){
+    @Override
+    public void onBackPressed() {
         // Закрываем Navigation Drawer по нажатию системной кнопки "Назад" если он открыт
         if (drawerResult.isDrawerOpen()) {
             drawerResult.closeDrawer();
-            //false - не надо делать откат назад, а закрываем меню
-            return false;
         } else {
-            //true - меню не открыто и выполняем откат назад
+                //если меню небыло открыто(выполняем действие НАЗАД)
+                super.onBackPressed();
+            }
+    }
+
+
+    // создание меню для Toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_manu, menu);
+        return true;
+    }
+
+
+    // обработка выбора пункта меню
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.refreshInfo) {
+            Log.d(myLog,"Обновление данных");
             return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
