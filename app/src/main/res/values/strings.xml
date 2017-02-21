@@ -54,6 +54,14 @@
 
     <string name="refresh_text">Обновить</string>
 
+    <string name="source_entropy">Энтропия источника</string>
+    <string name="entropy_calculator">Калькулятор для подсчета энтропии</string>
+    <string name="count">Подсчитать энтропию</string>
+    <string name="a">a</string>
+    <string name="clear">Очистить</string>
+    <string name="сalculate">Вычислить</string>
+    <string name="answer">Решение:</string>
+
 
     <string name="action_settings">Settings</string>
 </resources>

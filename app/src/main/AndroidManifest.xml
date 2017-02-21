@@ -28,7 +28,9 @@
         <activity android:name=".LecturerInfoActivity" />
         <activity android:name=".LecturersActivity" />
         <activity android:name=".SubjectsActivity" />
-        <activity android:name=".MarksActivity"></activity>
+        <activity android:name=".MarksActivity" />
+        <activity android:name=".ProgramsActivity" />
+        <activity android:name=".EntropyCalculator"></activity>
     </application>
 
 </manifest>

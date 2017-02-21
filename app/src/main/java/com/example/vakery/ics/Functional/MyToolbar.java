@@ -18,6 +18,7 @@ import com.example.vakery.ics.LecturersActivity;
 import com.example.vakery.ics.LocalSettingsFile;
 import com.example.vakery.ics.MainActivity;
 import com.example.vakery.ics.MarksActivity;
+import com.example.vakery.ics.ProgramsActivity;
 import com.example.vakery.ics.R;
 import com.example.vakery.ics.SubjectsActivity;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -81,22 +82,26 @@ public class MyToolbar extends AppCompatActivity {//наследуемся от 
                             //реализация переходов по нажатию
                             if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_lectors))){
                                 Intent intent = new Intent(Vars.getContext(), LecturersActivity.class);
-                                Vars.getContext().startActivity(intent);
+                                startActivity(intent);
                             }
                             if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_schedule))){
                                 Intent intent = new Intent(Vars.getContext(), MainActivity.class);
-                                Vars.getContext().startActivity(intent);
+                                startActivity(intent);
                             }
                             if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_exit))){
                                 prepareForExit();
                             }
                             if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_subjects))){
                                 Intent intent = new Intent(Vars.getContext(), SubjectsActivity.class);
-                                Vars.getContext().startActivity(intent);
+                                startActivity(intent);
                             }
                             if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_marks))){
                                 Intent intent = new Intent(Vars.getContext(), MarksActivity.class);
-                                Vars.getContext().startActivity(intent);
+                                startActivity(intent);
+                            }
+                            if(Vars.getContext().getString(((Nameable) drawerItem).getNameRes()).equals(Vars.getContext().getString(R.string.drawer_item_programs))){
+                                Intent intent = new Intent(Vars.getContext(), ProgramsActivity.class);
+                                startActivity(intent);
                             }
                             Toast.makeText(Vars.getContext(), Vars.getContext().getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
                         }
