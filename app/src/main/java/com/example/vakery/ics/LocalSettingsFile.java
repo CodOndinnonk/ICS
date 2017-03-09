@@ -37,7 +37,10 @@ public  class LocalSettingsFile {
     }
 
 
-    //проверка на наличие уже зарегастрированного пользователя
+    /***
+     * проверка на наличие уже зарегастрированного пользователя
+     * @return true - пользователь есть, false - нет
+     */
     public static boolean isUserInfo(){
         if (mSettings.contains(APP_PREFERENCES_NAME)){
             return true;

@@ -4,10 +4,16 @@ package com.example.vakery.ics.Functional;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.vakery.ics.DB.DatabaseHandler;
+import com.example.vakery.ics.Interfaces.DatabaseManager;
+import com.example.vakery.ics.Interfaces.ImageDownloaderManager;
 import com.example.vakery.ics.R;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -15,6 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
@@ -27,9 +34,10 @@ import java.util.concurrent.Executors;
 
 import com.example.vakery.ics.Entities.Lecturer;
 
-public class DownloadInfo {
+public class DownloadInfo implements ImageDownloaderManager {
     Context mContext;
     final String myLog = "myLog";
+    DatabaseManager databaseManager;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
    //некорректная работа
@@ -93,4 +101,78 @@ public class DownloadInfo {
     }
 
 
+    @Override
+    public void checkForInformation() {
+        final ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
+        ArrayList<Integer> lecturersId = databaseManager.getLecturersId();
+
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(myLog, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+
+        //проверяем существует ли папка для хранения фото, берем ссылку на папку (File) из Vars
+        if (! Vars.getImageFileDir().exists()){
+            Log.d(myLog, "директории нет, создаем ее");
+            // создаем каталог
+            Vars.getImageFileDir().mkdirs();
+        }else {}
+
+        for (int i = 0; i < lecturersId.size(); i++) {
+            //формируем имя файла для проверки его наличия
+            String name = "lecturer_" + lecturersId.get(i).toString() + ".png";
+            try {
+                //проверяем наличие фотографии в папке
+                if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
+                    //создаем экземпляр преподавателя с id и Photo_url
+                    listOfLecturers.add(new Lecturer(databaseManager.getLecturer(lecturersId.get(i)).getmId(),databaseManager.getLecturer(lecturersId.get(i)).getmPhoto()));
+                } else {
+                }
+            }catch (Exception e) {
+                Log.d(myLog, "Ошибка проверки наличия фото");
+            }
+        }
+        //если лист с преподавателями, которых надо скачать не пустой
+        if(listOfLecturers.size() > 0) {
+            //проверка на наличие интернет соединения
+            if (checkInternetConnection(Vars.getContext())) {
+
+                //создаем фоновый поток, чтоб основной не подвисал
+                //Thread t = new Thread(new Runnable() {
+                //    public void run() {
+                DownloadInfo downloadInfo = new DownloadInfo(Vars.getContext());
+                downloadInfo.loadImg(listOfLecturers);
+                //     }
+//            });
+//            //запуск потока
+//            t.start();
+            } else {
+                Log.d(myLog, "отсутствует интернет соединение");
+                Toast.makeText(Vars.getContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    public boolean checkInternetConnection(Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
 }

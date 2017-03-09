@@ -9,11 +9,13 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import com.example.vakery.ics.Entities.Lecturer;
+import com.example.vakery.ics.Functional.Vars;
+import com.example.vakery.ics.Interfaces.DatabaseManager;
 
-public class DatabaseHandler extends SQLiteOpenHelper {
+public class DatabaseHandler extends SQLiteOpenHelper implements DatabaseManager {
     final String myLog = "myLog";
     final String logQuery = "logQuery";
-    Context mContext;
+    Context mContext = Vars.getContext();
 
 
     private static final int DATABASE_VERSION = 1;//текущая версия БД
@@ -73,9 +75,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
-    public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mContext = context;
+    public DatabaseHandler() {
+        super(Vars.getContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 
@@ -184,8 +185,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 //  РАСПИСАНИЕ  ////////////////////////////////////////////////////////////////////////////////////
 
-
-    //берем расписание на заданный день заанной недели
+    /***
+     * берем расписание на заданный день заанной недели
+     * @param kindOfWeek тип недели (1- нечетная, 2- четная, 3- все типы недель)
+     * @param day день недели
+     * @return
+     */
     public Cursor getSchedule(int kindOfWeek, int day){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -211,7 +216,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    // берем предмет из таблицы расписания
+    /***
+     * берем предмет из таблицы расписания
+     * @param subjectId уникальный код предмета
+     * @return
+     */
     public Cursor getPersonalSubject(int subjectId){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -231,10 +240,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+
 //  КАФЕДРА ИКС ////////////////////////////////////////////////////////////////////////////////////
 
 
-    //берем предмет из таблицы с всеми предметами кафедры ИКС
+    /***
+     * берем предмет из таблицы с всеми предметами кафедры ИКС
+     * @param subjectId уникальный код предмета
+     * @return
+     */
     public Cursor getICSSubject(int subjectId){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -253,7 +267,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //берем все предметы из таблицы с всеми предметами кафедры ИКС
+    /***
+     * берем все предметы из таблицы с всеми предметами кафедры ИКС
+     * @return
+     */
     public Cursor getICSSubjects(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -274,7 +291,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //  ПРЕПОДАВАТЕЛИ  /////////////////////////////////////////////////////////////////////////////////
 
 
-    //берем всех преподавателей
+    /***
+     * берем всех преподавателей
+     * @return
+     */
     public Cursor getAllLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -291,7 +311,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //берем преподавателей, работающих на кафедре ИКС
+    /***
+     * берем преподавателей, работающих на кафедре ИКС
+     * @return
+     */
     public Cursor getICSLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -309,7 +332,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //берем препоавателей со всех кафедр кроме ИКС
+    /***
+     * берем препоавателей со всех кафедр кроме ИКС
+     * @return
+     */
     public Cursor getNotICSLecturers(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -327,7 +353,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //берем определенного преподавателя из всех
+    /***
+     * берем определенного преподавателя из всех
+     * @param lecturerId уникальный код преподавателя
+     * @return
+     */
     public Lecturer getLecturer(int lecturerId) {
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor;
@@ -353,7 +383,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //берем спикой id всех преподавателей, у которых есть ссылка на фотограцию, используется при скачивании
+    /***
+     * берем спикой id всех преподавателей, у которых есть ссылка на фотограцию, используется при скачивании
+     * @return
+     */
     public ArrayList<Integer> getLecturersId(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
         Cursor cursor ;
@@ -381,7 +414,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //  ОЦЕНКИ  ////////////////////////////////////////////////////////////////////////////////////////
 
 
-    //берем все оценки
+    /***
+     * берем все оценки
+     * @return
+     */
     public Cursor getMarks(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -402,7 +438,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //  ВРЕМЯ  /////////////////////////////////////////////////////////////////////////////////////////
 
 
-    //берем время начала и конца пар
+    /***
+     * берем время начала и конца пар
+     * @return
+     */
     public Cursor getTime(){
         SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
 
@@ -419,7 +458,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    // вывод в лог данных из курсора
+    /***
+     * вывод в лог данных из курсора
+     * @param c курсор с данными
+     */
     void logCursor(Cursor c) {
         if (c != null) {
             if (c.moveToFirst()) {

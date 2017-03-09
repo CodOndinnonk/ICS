@@ -5,7 +5,7 @@
     android:id="@+id/activity_lecturers"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="25dp"
     tools:context="com.example.vakery.ics.LecturersActivity">
 
     <android.support.v7.widget.Toolbar
