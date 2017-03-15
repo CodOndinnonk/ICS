@@ -12,8 +12,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.vakery.ics.DB.DatabaseHandler;
-import com.example.vakery.ics.Interfaces.DatabaseManager;
-import com.example.vakery.ics.Interfaces.ImageDownloaderManager;
 import com.example.vakery.ics.R;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,26 +27,32 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.example.vakery.ics.Entities.Lecturer;
 
-public class DownloadInfo implements ImageDownloaderManager {
-    Context mContext;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class DownloadInfo  {
     final String myLog = "myLog";
-    DatabaseManager databaseManager;
+    DatabaseHandler db = new DatabaseHandler();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
    //некорректная работа
-    public DownloadInfo(Context context){
-        mContext = context;
-        prepareForLoadingImg();
+    public DownloadInfo(){
+        //prepareForLoadingImg();
     }
 
     public void prepareForLoadingImg() {
         Executor downloadExecutor = Executors.newFixedThreadPool(5);
-        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) Vars.getContext().getSystemService(Context.ACTIVITY_SERVICE);
         int memClass = am.getMemoryClass();
         final int memoryCacheSize = 1024 * 1024 * memClass / 16;
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -58,10 +62,10 @@ public class DownloadInfo implements ImageDownloaderManager {
                 .cacheInMemory(true)
                 .build();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(mContext.getApplicationContext())
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(Vars.getContext().getApplicationContext())
                 .taskExecutor(downloadExecutor)
                 .memoryCache(new UsingFreqLimitedMemoryCache(memoryCacheSize)) // 2 Mb
-                .imageDownloader(new BaseImageDownloader(mContext, 5 * 1000, 30 * 1000)) // connectTimeout (5 s), readTimeout (30 s)
+                .imageDownloader(new BaseImageDownloader(Vars.getContext(), 5 * 1000, 30 * 1000)) // connectTimeout (5 s), readTimeout (30 s)
                 .defaultDisplayImageOptions(options)
                 .build();
         ImageLoader.getInstance().init(config);
@@ -89,7 +93,7 @@ public class DownloadInfo implements ImageDownloaderManager {
                         Log.d(myLog, "файл скачан = " + mediaFile.getAbsolutePath());
 
                     } catch (FileNotFoundException e) {
-                        Toast.makeText(mContext, R.string.loading_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Vars.getContext(), R.string.loading_error, Toast.LENGTH_SHORT).show();
                         Log.d(myLog, "File not found: " + e.getMessage());
                     } catch (IOException e) {
                         Log.d(myLog, "Error accessing file: " + e.getMessage());
@@ -101,10 +105,9 @@ public class DownloadInfo implements ImageDownloaderManager {
     }
 
 
-    @Override
     public void checkForInformation() {
         final ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
-        ArrayList<Integer> lecturersId = databaseManager.getLecturersId();
+        ArrayList<Integer> lecturersId = db.getLecturersId();
 
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -127,7 +130,7 @@ public class DownloadInfo implements ImageDownloaderManager {
                 //проверяем наличие фотографии в папке
                 if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
                     //создаем экземпляр преподавателя с id и Photo_url
-                    listOfLecturers.add(new Lecturer(databaseManager.getLecturer(lecturersId.get(i)).getmId(),databaseManager.getLecturer(lecturersId.get(i)).getmPhoto()));
+                    listOfLecturers.add(new Lecturer(db.getLecturer(lecturersId.get(i)).getmId(),db.getLecturer(lecturersId.get(i)).getmPhoto()));
                 } else {
                 }
             }catch (Exception e) {
@@ -142,8 +145,7 @@ public class DownloadInfo implements ImageDownloaderManager {
                 //создаем фоновый поток, чтоб основной не подвисал
                 //Thread t = new Thread(new Runnable() {
                 //    public void run() {
-                DownloadInfo downloadInfo = new DownloadInfo(Vars.getContext());
-                downloadInfo.loadImg(listOfLecturers);
+                this.loadImg(listOfLecturers);
                 //     }
 //            });
 //            //запуск потока
@@ -155,7 +157,7 @@ public class DownloadInfo implements ImageDownloaderManager {
         }
     }
 
-    @Override
+
     public boolean checkInternetConnection(Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -175,4 +177,80 @@ public class DownloadInfo implements ImageDownloaderManager {
         }
         return false;
     }
+
+
+    public boolean loadInfoWithoutLogin(){
+
+        Thread thread = new Thread(null, doBackgroundThreadProcessing,
+                "Background");
+        thread.start();
+
+        return true;
+    }
+
+    private Runnable doBackgroundThreadProcessing = new Runnable() {
+        public void run() {
+            String loadLink = "http://onpu-iks.pe.hu/php/api/getDataWithoutLogin.php";
+            try {
+                DatabaseHandler db = new DatabaseHandler();
+                JSONArray array;
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+                ResponseHandler responseHandler = new BasicResponseHandler();
+                HttpGet http = new HttpGet(loadLink);
+                //получаем ответ от сервера
+                String response = (httpClient.execute(http, responseHandler)).toString();
+
+                if( new JSONObject(response).get("ics_subjects").equals(null)){
+                    int test = 0;
+                }else {
+                    array = new JSONObject(response).getJSONArray("ics_subjects");
+                    for (int i = 0; i < array.length(); i++) {
+                        //сделать сохранение предмета
+                        int test = 0;
+
+                    }
+
+                }
+
+
+                array = new JSONObject(response).getJSONArray("lecturers");
+                if (array == null) {
+                } else {
+                    for (int i = 0; i < array.length(); i++) {
+
+                        //сделать метод очищающий таблицу
+
+                        JSONObject object = array.getJSONObject(i);
+
+                        Lecturer lecturer = new Lecturer();
+                        lecturer.setmId(object.getInt("Lecturer_id"));
+                        lecturer.setmPhoto(object.getString("Photo"));
+                        lecturer.setmSurname(object.getString("Surname"));
+                        lecturer.setmName(object.getString("Name"));
+                        lecturer.setmPatronymic(object.getString("Patronymic"));
+                        lecturer.setmContacts(object.getString("Contacts"));
+
+                        //проверка на значение в поле, если оно null, то ставим 0 (так как это int, при null вылетает ошибка)
+                        if(object.get("ICS").equals(null)){
+                            lecturer.setmIsICS(0);
+                        }else {
+                            lecturer.setmIsICS(1);
+                        }
+
+                        db.addLecturer(lecturer);
+
+                    }
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+
+
 }

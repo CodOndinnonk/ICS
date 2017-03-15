@@ -55,7 +55,7 @@ public class MainActivity extends MyToolbar {//наследуемся от MyToo
         //создание Toolbar
         this.createToolbar(activityTitle);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
 
         //настройка пейджера
         fragmentTransaction = getFragmentManager().beginTransaction();
@@ -77,85 +77,10 @@ public class MainActivity extends MyToolbar {//наследуемся от MyToo
         //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для экономии действий
         Vars.fillTimeList(this);
 
-        checkForInformation();
+        //checkForInformation();
     }
 
 
-    public void checkForInformation(){
-        final ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
-        ArrayList<Integer> lecturersId = db.getLecturersId();
-
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            Log.d(myLog, "SD-карта не доступна: " + Environment.getExternalStorageState());
-            return;
-        }
-
-        //проверяем существует ли папка для хранения фото, берем ссылку на папку (File) из Vars
-        if (! Vars.getImageFileDir().exists()){
-            Log.d(myLog, "директории нет, создаем ее");
-            // создаем каталог
-            Vars.getImageFileDir().mkdirs();
-        }else {}
-
-        for (int i = 0; i < lecturersId.size(); i++) {
-            //формируем имя файла для проверки его наличия
-            String name = "lecturer_" + lecturersId.get(i).toString() + ".png";
-            try {
-                //проверяем наличие фотографии в папке
-                if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
-                    //создаем экземпляр преподавателя с id и Photo_url
-                    listOfLecturers.add(new Lecturer(db.getLecturer(lecturersId.get(i)).getmId(),db.getLecturer(lecturersId.get(i)).getmPhoto()));
-                } else {
-                }
-            }catch (Exception e) {
-                Log.d(myLog, "Ошибка проверки наличия фото");
-            }
-        }
-        //если лист с преподавателями, которых надо скачать не пустой
-        if(listOfLecturers.size() > 0) {
-            //проверка на наличие интернет соединения
-            if (checkInternetConnection(getApplicationContext())) {
-
-                //создаем фоновый поток, чтоб основной не подвисал
-                //Thread t = new Thread(new Runnable() {
-                //    public void run() {
-                DownloadInfo downloadInfo = new DownloadInfo(getApplicationContext());
-                downloadInfo.loadImg(listOfLecturers);
-                //     }
-//            });
-//            //запуск потока
-//            t.start();
-            } else {
-                Log.d(myLog, "отсутствует интернет соединение");
-                Toast.makeText(getApplicationContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
-    // метод для проверки подключения
-    public static boolean checkInternetConnection(final Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        wifiInfo = cm.getActiveNetworkInfo();
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
-            return true;
-        }
-        return false;
-    }
 
 
     //переопреднеленный метод(стандартный не работает), который обновляет данные в страницах пейджера

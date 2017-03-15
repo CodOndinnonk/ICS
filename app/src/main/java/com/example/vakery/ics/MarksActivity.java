@@ -31,7 +31,7 @@ public class MarksActivity extends MyToolbar {
         //создание Toolbar
         this.createToolbar(activityTitle);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
 
         lvMarks = (ListView)findViewById(R.id.listViewOfMarks);
 

@@ -7,6 +7,7 @@ public class Lecturer {
     public String mName;
     public String mPatronymic;
     public String mContacts;
+    public int mIsICS;
 
 
     public Lecturer(){
@@ -65,5 +66,13 @@ public class Lecturer {
 
     public void setmContacts(String mContacts) {
         this.mContacts = mContacts;
+    }
+
+    public int getmIsICS() {
+        return mIsICS;
+    }
+
+    public void setmIsICS(int mIsICS) {
+        this.mIsICS = mIsICS;
     }
 }

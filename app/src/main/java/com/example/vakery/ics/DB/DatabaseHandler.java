@@ -1,5 +1,6 @@
 package com.example.vakery.ics.DB;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 
 import com.example.vakery.ics.Entities.Lecturer;
 import com.example.vakery.ics.Functional.Vars;
-import com.example.vakery.ics.Interfaces.DatabaseManager;
 
-public class DatabaseHandler extends SQLiteOpenHelper implements DatabaseManager {
+
+public class DatabaseHandler extends SQLiteOpenHelper  {
     final String myLog = "myLog";
     final String logQuery = "logQuery";
     Context mContext = Vars.getContext();
@@ -290,6 +291,20 @@ public class DatabaseHandler extends SQLiteOpenHelper implements DatabaseManager
 
 //  ПРЕПОДАВАТЕЛИ  /////////////////////////////////////////////////////////////////////////////////
 
+
+    public void addLecturer(Lecturer lecturer){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_LECTURER_ID, lecturer.getmId());
+        values.put(KEY_PHOTO_URL, lecturer.getmPhoto());
+        values.put(KEY_SURNAME, lecturer.getmSurname());
+        values.put(KEY_NAME, lecturer.getmName());
+        values.put(KEY_PATRONYMIC, lecturer.getmPatronymic());
+        values.put(KEY_CONTACTS, lecturer.getmContacts());
+        values.put(KEY_ICS, lecturer.getmIsICS());
+        db.insert(TABLE_LECTURERS, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
 
     /***
      * берем всех преподавателей

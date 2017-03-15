@@ -25,7 +25,7 @@ public class LecturersActivity extends MyToolbar {
         //создание Toolbar
         this.createToolbar(activityTitle);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
 
         // определяем фрагмент для пейджера
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

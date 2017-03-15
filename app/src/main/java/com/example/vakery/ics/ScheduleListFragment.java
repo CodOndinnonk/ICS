@@ -64,7 +64,7 @@ public class ScheduleListFragment extends Fragment {
 
         pageNumber = getArguments().getInt("N");
 
-        db = new DatabaseHandler(getContext());
+        db = new DatabaseHandler();
 
     }
 

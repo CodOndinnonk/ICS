@@ -45,7 +45,7 @@ public class LecturersListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
 
-        db = new DatabaseHandler(getContext());
+        db = new DatabaseHandler();
     }
 
 

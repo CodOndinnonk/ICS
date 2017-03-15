@@ -33,6 +33,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 public class MyToolbar extends AppCompatActivity {//наследуемся от AppCompatActivity для того, чтоб можно было определить все методы активити(создание меню,"назад"...)
     final String myLog = "myLog";
     private Drawer.Result drawerResult = null;
+    DownloadInfo downloadInfo = new DownloadInfo();
 
 
     //создание Toolbar(меню), используемого на всех активити
@@ -178,6 +179,8 @@ public class MyToolbar extends AppCompatActivity {//наследуемся от 
 
         if (id == R.id.refreshInfo) {
             Log.d(myLog,"Обновление данных");
+
+            downloadInfo.loadInfoWithoutLogin();
             return true;
         }
 

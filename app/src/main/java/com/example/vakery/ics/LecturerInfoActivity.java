@@ -31,7 +31,7 @@ public class LecturerInfoActivity extends MyToolbar {
         lecturerName = (TextView)findViewById(R.id.lecturerInfoName);
         lecturerContacts = (TextView)findViewById(R.id.lecturerInfoContacts);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
         Intent intent = getIntent();
         //извлекаем переданное id для получения данных
         lecturerId = intent.getIntExtra("id",999);

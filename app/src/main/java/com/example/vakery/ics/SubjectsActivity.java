@@ -37,7 +37,7 @@ public class SubjectsActivity extends MyToolbar {
         //создание Toolbar
         this.createToolbar(activityTitle);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
 
         lvSubjects = (ListView)findViewById(R.id.listViewOfSubjects);
 

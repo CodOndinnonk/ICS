@@ -73,7 +73,7 @@ public  class Vars {
 
 
     public static void fillTimeList(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
+        DatabaseHandler db = new DatabaseHandler();
         Cursor cursor = db.getTime();
         if (cursor != null) {
             if (cursor.moveToFirst()) {

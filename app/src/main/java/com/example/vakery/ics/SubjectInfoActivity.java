@@ -41,7 +41,7 @@ public class SubjectInfoActivity extends MyToolbar {
 
         lecturerInfo.setOnClickListener(onLecturerClickListener);
 
-        db = new DatabaseHandler(this);
+        db = new DatabaseHandler();
         Intent intent = getIntent();
         //извлекаем переданное id для получения данных
         Cursor cursor = null;
