@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.vakery.ics.LocalSettingsFile;
 import com.example.vakery.ics.R;
 
 public class Login extends DialogFragment  {

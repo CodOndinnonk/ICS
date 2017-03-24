@@ -62,6 +62,8 @@
     <string name="сalculate">Вычислить</string>
     <string name="answer">Решение:</string>
 
+    <string name="complete_registration">Заполните регистрационную форму</string>
+    <string name="incorrect_user_data">Данные пользователя некорректны. Заполните форму повторно.</string>
 
     <string name="action_settings">Settings</string>
 </resources>
