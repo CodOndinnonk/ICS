@@ -35,20 +35,11 @@ public  class Vars {
     static {imageFileDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/ICS");
           }
 
-    private static boolean wasUserChecked = false;
-
 
     public static Context getContext() {
         return context;
     }
 
-    public static boolean isWasUserChecked() {
-        return wasUserChecked;
-    }
-
-    public static void setWasUserChecked(boolean wasUserChecked) {
-        Vars.wasUserChecked = wasUserChecked;
-    }
 
     public static void setImageFileDir(File imageFileDir) {
         Vars.imageFileDir = imageFileDir;

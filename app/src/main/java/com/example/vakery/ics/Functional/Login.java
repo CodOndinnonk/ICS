@@ -16,7 +16,11 @@ public class Login extends DialogFragment  {
     private View form = null;
 
 
-    // содание диалога для регистрации
+    /***
+     * Содание диалога для регистрации
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 

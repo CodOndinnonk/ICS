@@ -55,6 +55,10 @@ public class DownloadInfo {
         //prepareForLoadingImg();
     }
 
+
+    /***
+     * Подготовительные действия для загрущзки изображений с сервера
+     */
     public void prepareForLoadingImg() {
         Executor downloadExecutor = Executors.newFixedThreadPool(5);
         ActivityManager am = (ActivityManager) Vars.getContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -76,43 +80,15 @@ public class DownloadInfo {
         ImageLoader.getInstance().init(config);
     }
 
-    public void loadImg(final ArrayList<Lecturer> lecturers) {
-        for (int i = 0; i < lecturers.size(); i++) {
-            //тоже самое, что i в цикле, но final, так как список тоже final
-            final int finalI = i;
-            //прописываем ссылку на изображене в инете
 
-            ImageLoader.getInstance().loadImage(lecturers.get(i).getmPhoto(), new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                    String name = "lecturer_" + String.valueOf(lecturers.get(finalI).getmId()) + ".png";
-                    //финальный файл (путь расположения , File.separator -> разделитель для деррикторий, название, под которым сохраняем файл )
-                    //используем передаваемый, а не из Vars потому, что в передаваемом есть имя файла в идиректории, в а Vars нет(только путь к папке)
-                    File mediaFile = new File(Vars.getImageFileDir() + File.separator + name);
-
-                    try {
-                        FileOutputStream fos = new FileOutputStream(mediaFile);
-                        loadedImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
-                        fos.close();
-                        Log.d(myLog, "файл скачан = " + mediaFile.getAbsolutePath());
-
-                    } catch (FileNotFoundException e) {
-                        Toast.makeText(Vars.getContext(), R.string.loading_error, Toast.LENGTH_SHORT).show();
-                        Log.d(myLog, "File not found: " + e.getMessage());
-                    } catch (IOException e) {
-                        Log.d(myLog, "Error accessing file: " + e.getMessage());
-                    }
-                }
-            });
-        }
-
-    }
-
-
+    /***
+     * Проверка на наличие всех необходимых даный на локальном устройстве(фото, бд)
+     */
     public void checkForInformation() {
         final ArrayList<Lecturer> listOfLecturers = new ArrayList<Lecturer>();
         ArrayList<Integer> lecturersId = db.getLecturersId();
+
+        // загрузка изображений
 
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -161,7 +137,52 @@ public class DownloadInfo {
                 Toast.makeText(Vars.getContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
             }
         }
+        // загрузка данных
+        if(db.checkForInfo()){
+            //если информация в бд есть, то ничего не делаем
+        }else {
+            //загружаем информацию с сервера
+            updateInfo();
+        }
     }
+
+
+    /***
+     * Загрузка фотографий преподавателей
+     * @param lecturers объект "преподаватель" с id и photoUrl
+     */
+    public void loadImg(final ArrayList<Lecturer> lecturers) {
+        for (int i = 0; i < lecturers.size(); i++) {
+            //тоже самое, что i в цикле, но final, так как список тоже final
+            final int finalI = i;
+            //прописываем ссылку на изображене в инете
+
+            ImageLoader.getInstance().loadImage(lecturers.get(i).getmPhoto(), new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                    String name = "lecturer_" + String.valueOf(lecturers.get(finalI).getmId()) + ".png";
+                    //финальный файл (путь расположения , File.separator -> разделитель для деррикторий, название, под которым сохраняем файл )
+                    //используем передаваемый, а не из Vars потому, что в передаваемом есть имя файла в идиректории, в а Vars нет(только путь к папке)
+                    File mediaFile = new File(Vars.getImageFileDir() + File.separator + name);
+
+                    try {
+                        FileOutputStream fos = new FileOutputStream(mediaFile);
+                        loadedImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                        fos.close();
+                        Log.d(myLog, "файл скачан = " + mediaFile.getAbsolutePath());
+
+                    } catch (FileNotFoundException e) {
+                        Toast.makeText(Vars.getContext(), R.string.loading_error, Toast.LENGTH_SHORT).show();
+                        Log.d(myLog, "File not found: " + e.getMessage());
+                    } catch (IOException e) {
+                        Log.d(myLog, "Error accessing file: " + e.getMessage());
+                    }
+                }
+            });
+        }
+    }
+
 
     /***
      * проверка наличия интернет соединения
@@ -188,7 +209,7 @@ public class DownloadInfo {
 
     /***
      * загрузка данных с сервера
-     * @return
+     * @return покачто всегда возвращает true
      */
     public boolean updateInfo() {
 
@@ -205,12 +226,10 @@ public class DownloadInfo {
                     "Background");
             userIdInfo.start();
 
- //НУЖНО СДЕЛАТЬ МЕХАНИЗМ, КОТОРЫЙ ПОСЛЕ ЗАВЕРШЕНИЯ ПРОВЕРКИ СТУДЕНТА БУДЕТ ПУСКАТЬ ДАЛЬШЕ, А ТО ПРОХОДИТ ДАЛЬШЕ НЕ ЗАКОНЧИВ ПРЕДЫДУЩЕЕ И ОШИБКА
+//НУЖНО СДЕЛАТЬ МЕХАНИЗМ, КОТОРЫЙ ПОСЛЕ ЗАВЕРШЕНИЯ ПРОВЕРКИ СТУДЕНТА БУДЕТ ПУСКАТЬ ДАЛЬШЕ, А ТО ПРОХОДИТ ДАЛЬШЕ НЕ ЗАКОНЧИВ ПРЕДЫДУЩЕЕ И ОШИБКА
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-
-
 
                     if(LocalSettingsFile.isSuchStudent()){ //если пользователь был найден и идентифицирован
                         Thread userInfo = new Thread(null, loadPersonalInfo,
@@ -219,26 +238,14 @@ public class DownloadInfo {
                     }else {
                         Toast.makeText(Vars.getContext(),R.string.incorrect_user_data,Toast.LENGTH_LONG).show();
                     }
-
-
                 }
             }, 3000);
-
-//            if(LocalSettingsFile.isSuchStudent()){ //если пользователь был найден и идентифицирован
-//                Thread userInfo = new Thread(null, loadPersonalInfo,
-//                    "Background");
-//                userInfo.start();
-//            }else {
-//                Toast.makeText(Vars.getContext(),R.string.incorrect_user_data,Toast.LENGTH_LONG).show();
-//            }
-
         } else {
             Toast.makeText(Vars.getContext(),R.string.complete_registration,Toast.LENGTH_LONG).show();
         }
     }else {
         Toast.makeText(Vars.getContext(),R.string.no_internet_connection_info,Toast.LENGTH_LONG).show();
     }
-
         return true;
     }
 
@@ -272,9 +279,7 @@ public class DownloadInfo {
                 }else {
                     groupId = -1;
                 }
-
                 LocalSettingsFile.setUserInfo(studentId,groupId);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -381,6 +386,7 @@ public class DownloadInfo {
             }
         }
     };
+
 
     /***
      * Тело потока для загрузки личных данный пользователя, таких как расписание и тд
@@ -509,7 +515,6 @@ public class DownloadInfo {
                         db.addSchedule(schedule);
                     }
                 } else {}
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

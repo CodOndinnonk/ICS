@@ -175,6 +175,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
 
     }
 
+
     /***
      * Очистка таблицы
      * @param tableName название таблицы, которую надо очистить
@@ -185,7 +186,12 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
     }
 
 
-    //при обновлении таблицы
+    /***
+     * Обновление бд
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LECTURERS);
@@ -197,6 +203,27 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICS_SUBJECTS);
         onCreate(db);
     }
+
+
+    /***
+     * Проверка на наличие информации в базе данных
+     * @return true -> есть данные, false -> нет данных
+     */
+    public boolean checkForInfo(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+        Cursor cursor ;
+        String sqlQuery = "SELECT *  FROM Week" ;
+        cursor = db.rawQuery(sqlQuery, null);
+        cursor.close();
+        if(cursor.getCount() > 0){
+            db.close();
+            return true;
+        }else {
+            db.close();
+            return false;
+        }
+    }
+
 
 //  УВЕДОМЛЕНИЯ  ///////////////////////////////////////////////////////////////////////////////////
 
@@ -237,6 +264,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_WEEK, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем расписание на заданный день заанной недели
@@ -292,6 +320,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         return cursor;
     }
 
+
     /***
      * Добавление предмета в бд (обычные прелметы)
      * @param subject
@@ -307,7 +336,6 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_PERSONAL_SUBJECTS, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
-
 
 
 //  КАФЕДРА ИКС ////////////////////////////////////////////////////////////////////////////////////
@@ -329,6 +357,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_ICS_SUBJECTS, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем предмет из таблицы с всеми предметами кафедры ИКС
@@ -393,6 +422,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_LECTURERS, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем всех преподавателей
@@ -482,6 +512,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         } else {
             Log.d(myLog, "Cursor is null");
         }
+        cursor.close();
+        db.close();
         return lecturer;
     }
 
@@ -506,16 +538,16 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
                     lecturersId.add(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
                 } while (cursor.moveToNext());
             }
-        } else
+        } else {
             Log.d(logQuery, "Cursor is null");
-
+        }
         db.close();
+        cursor.close();
         return lecturersId;
     }
 
 
 //  ОЦЕНКИ  ////////////////////////////////////////////////////////////////////////////////////////
-
 
     /***
      * Добавление оценки по предмету
@@ -532,6 +564,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_MARKS, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем все оценки
@@ -571,6 +604,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_TIME, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем время начала и конца пар

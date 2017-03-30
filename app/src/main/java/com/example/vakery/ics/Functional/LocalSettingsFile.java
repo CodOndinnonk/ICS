@@ -20,6 +20,7 @@ public class LocalSettingsFile {
         mSettings = Vars.getContext().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);// инициализация переменной
     }
 
+
     /***
      * Запись информации о пользователе в файл
      * @param name имя
@@ -33,6 +34,7 @@ public class LocalSettingsFile {
         editor.putString(APP_PREFERENCES_GROUP, group);
         editor.apply();// метод, сохраняющий добавленные данные
     }
+
 
     /***
      * Запись детальной информации о польователе в файл
@@ -65,21 +67,26 @@ public class LocalSettingsFile {
         return mSettings.getString(APP_PREFERENCES_NAME,"");
     }
 
+
     public static String getUserSurname(){
         return mSettings.getString(APP_PREFERENCES_SURNAME,"");
     }
+
 
     public static String getUserGroup(){
         return mSettings.getString(APP_PREFERENCES_GROUP,"");
     }
 
+
     public static int getUserId(){
         return mSettings.getInt(APP_PREFERENCES_STUDENT_ID, -1);
     }
 
+
     public static int getGroupId(){
         return mSettings.getInt(APP_PREFERENCES_GROUP_ID, -1);
     }
+
 
     /***
      * Проверка на наличие уже зарегастрированного пользователя
@@ -93,12 +100,12 @@ public class LocalSettingsFile {
         }
     }
 
+
     /***
      * Проверка на корректность введенных данных и обнаружение пользователя на веб сервере
      * @return true - пользователь найден в базе сервера, false - нет
      */
     public static boolean isSuchStudent(){
-
         if (mSettings.getInt(APP_PREFERENCES_STUDENT_ID, -1) > 0){//если есть id студента (если студента нет в бд, то его id = -1)
             return true;
         }else {
