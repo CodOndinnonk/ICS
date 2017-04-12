@@ -21,15 +21,15 @@
          />
 
     <ProgressBar
-        android:id="@+id/progressBarOfWeek"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/dayOfWeekText"
+        android:id="@+id/progressBarOfWeek"
+        android:progress="60"
         android:minHeight="5dp"
-        android:progress="60" />
+        android:layout_below="@+id/dayOfWeekText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,16 +45,19 @@
         android:layout_alignParentStart="true"
         android:gravity="center" />
 
-    <ListView
+    <CalendarView
+        android:id="@+id/calendarView"
+        style="@style/AppTheme.Light"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/listViewOfSchedule"
-        android:dividerHeight="0dp"
-        android:divider="@android:color/transparent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/progressBarOfWeek"
-        android:background="@android:color/background_light" />
+        android:layout_centerHorizontal="true"
+        android:selectedWeekBackgroundColor="@color/colorPrimaryDark"
+        android:theme="@style/AppTheme.Light"
+        android:unfocusedMonthDateColor="@color/cardview_dark_background"
+        android:weekNumberColor="@color/cardview_dark_background"
+        android:weekSeparatorLineColor="@color/cardview_shadow_start_color" />
+
 
 </RelativeLayout>

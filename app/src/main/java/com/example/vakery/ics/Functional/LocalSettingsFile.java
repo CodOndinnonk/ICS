@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 
 import com.example.vakery.ics.Functional.Vars;
 
+import java.io.EOFException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class LocalSettingsFile {
     public  static final String APP_PREFERENCES = "icsSettings";// это будет именем файла настроек
     public static final String APP_PREFERENCES_NAME = "Name";
@@ -75,6 +79,16 @@ public class LocalSettingsFile {
 
     public static String getUserGroup(){
         return mSettings.getString(APP_PREFERENCES_GROUP,"");
+    }
+
+    public static int getUserCourse(){
+        int course = 0;
+        try {
+            course = GregorianCalendar.getInstance().get(Calendar.YEAR) - Integer.valueOf("20"+getUserGroup().substring(3,5));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return course;
     }
 
 

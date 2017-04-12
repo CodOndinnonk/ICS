@@ -331,6 +331,7 @@ public class DownloadInfo {
                         db.addICSSubject(icsSubject);
                     }
                 } else {}
+
                 //сохранение преподавателей
 
                 //проверка на наличие необходимых данные в ответе сервера
@@ -360,6 +361,7 @@ public class DownloadInfo {
                         db.addLecturer(lecturer);
                     }
                 } else {}
+
                 //сохранение времени занятий
 
                 //проверка на наличие необходимых данные в ответе сервера
@@ -393,11 +395,12 @@ public class DownloadInfo {
      */
     private Runnable loadPersonalInfo = new Runnable() {
         public void run() {
+            DatabaseHandler db = new DatabaseHandler();
+
 
             String loadLink = "http://onpu-iks.pe.hu/php/api/getDataWithLogin.php?studentId="+LocalSettingsFile.getUserId()+
-                    "&groupId="+LocalSettingsFile.getGroupId();
+                    "&groupId="+LocalSettingsFile.getGroupId()+"&course="+LocalSettingsFile.getUserCourse();
             try {
-                DatabaseHandler db = new DatabaseHandler();
                 JSONArray array;
                 JSONObject object;
                 DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -443,6 +446,8 @@ public class DownloadInfo {
                         db.addMark(mark);
                     }
                 } else {}
+
+
                 //сохранение увеломлений пользователя
 
                 //проверка на наличие необходимых данные в ответе сервера
@@ -491,7 +496,7 @@ public class DownloadInfo {
                     }
                 } else {}
 
-                //сохранение распсиания студента
+                //сохранение расписания студента
 
                 //проверка на наличие необходимых данные в ответе сервера
                 if (!new JSONObject(response).get("week").equals(null)) {
@@ -515,6 +520,20 @@ public class DownloadInfo {
                         db.addSchedule(schedule);
                     }
                 } else {}
+
+                //сохранение общей информации
+
+                //проверка на наличие необходимых данные в ответе сервера
+                if (!new JSONObject(response).get("global").equals(null)) {
+                    object = new JSONObject(response).getJSONArray("global").getJSONObject(0);
+
+                    //удаление имеющихся данных в таблице
+                    db.clearTable(db.TABLE_GLOBAL);
+
+                    db.addGlobalInfo(object.getInt("id"),object.getString("Start_date"),object.getInt("Number_of_weeks"));
+
+                } else {}
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

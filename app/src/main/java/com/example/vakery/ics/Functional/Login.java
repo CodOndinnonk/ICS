@@ -44,6 +44,7 @@ public class Login extends DialogFragment  {
                     Toast.makeText(getContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                 }else {
                     LocalSettingsFile.setUserInfo(enterName.getText().toString(), enterSurname.getText().toString(), enterGroup.getText().toString());
+                    new DownloadInfo().updateInfo();
                     //закрываем диалог
                     getDialog().dismiss();
                 }

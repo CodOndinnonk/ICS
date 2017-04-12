@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.example.vakery.ics.Entities.ICSSubject;
 import com.example.vakery.ics.Entities.Lecturer;
@@ -17,6 +19,12 @@ import com.example.vakery.ics.Entities.Schedule;
 import com.example.vakery.ics.Entities.Subject;
 import com.example.vakery.ics.Entities.Time;
 import com.example.vakery.ics.Functional.Vars;
+
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
+
+import java.text.DateFormat;
+import java.util.GregorianCalendar;
 
 
 public class DatabaseHandler extends SQLiteOpenHelper  {
@@ -79,8 +87,9 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
     public static final String KEY_KIND = "Kind";//название поля id
     public static final String KEY_SUBJECT_INFO = "Extra_info";//название поля id
 
-
-
+    public static final String TABLE_GLOBAL = "Global";//название таблицы
+    public static final String KEY_START_DATE = "Start_date";//название поля id
+    public static final String KEY_NUMBER_OF_WEEKS = "Number_of_weeks";//название поля id
 
     public DatabaseHandler() {
         super(Vars.getContext(), DATABASE_NAME, null, DATABASE_VERSION);
@@ -168,6 +177,13 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
                 + ")";
         sqLiteDatabase.execSQL(CREATE_ICS_SUBJECTS_TABLE);
 
+        String CREATE_GLOBAL_TABLE = "CREATE TABLE " + TABLE_GLOBAL +
+                "("
+                + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
+                + KEY_START_DATE + " DATE NOT NULL,"
+                + KEY_NUMBER_OF_WEEKS + " INTEGER NOT NULL"
+                + ")";
+        sqLiteDatabase.execSQL(CREATE_GLOBAL_TABLE);
         ////////////////////////////////////////////////////////////////////////////////
         //тестовая загрузка бд
 //       FillDB fillDB = new FillDB(sqLiteDatabase);
@@ -194,6 +210,15 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        DropDatabase();
+    }
+
+
+    /***
+     * Удаляет таблицы и содает их заново
+     */
+    public void DropDatabase(){
+        SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LECTURERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_SUBJECTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VISITING);
@@ -201,6 +226,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WEEK);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICS_SUBJECTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GLOBAL);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME);
         onCreate(db);
     }
 
@@ -224,6 +251,69 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         }
     }
 
+//  ГЛОБАЛЬНАЯ ИНФОРМАЦИЯ  /////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление глобальной информации, полученной от сервера
+     * @param id уникальный идентификатор записи на сервере
+     * @param startDate дата начала учебного процесса
+     * @param numberOfWeeks кол-во учебных недель
+     */
+    public void addGlobalInfo(int id, String startDate, int numberOfWeeks){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ID, id);
+        values.put(KEY_START_DATE, startDate);
+        values.put(KEY_NUMBER_OF_WEEKS, numberOfWeeks);
+
+        db.insert(TABLE_GLOBAL, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+
+    }
+
+    /***
+     * Возвращает текущий номер учебной недели
+     * @return номер недели
+     */
+    public int getCurrentWeek(){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor ;
+        String sqlQuery = "SELECT * from " + TABLE_GLOBAL ;
+        cursor = db.rawQuery(sqlQuery, null);
+        long dayCount;
+        int weekCount;
+        cursor.moveToFirst();
+
+        int year = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0,4));
+        int month = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5,7));
+        int day = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
+
+        Date currentDate = Calendar.getInstance().getTime();
+        Date startDate = new Date(year-1900,month-1,day);
+
+        long c = currentDate.getTime();
+        long s = startDate.getTime();
+
+        if(currentDate.after(startDate) || currentDate.equals(startDate)){
+            long difference = currentDate.getTime() - startDate.getTime();
+
+            dayCount =  difference / 86400000;
+            //недели считает не правильно
+            weekCount = (int) dayCount / 7;
+
+// надо, чтоб считало недели не по дням, а по календарю.
+            // как вариант можно начальную дату ставить чтоб была первым днем недели, а текущая последним нем недели
+            //тогда можно будет делить на 7
+
+        //    Weeks weeks = Weeks.weeksBetween(new DateTime(startDate), DateTime.now());
+          //  int weeksInYear = weeks.getWeeks();
+        }else {
+            weekCount = 0;
+        }
+        return weekCount;
+    }
 
 //  УВЕДОМЛЕНИЯ  ///////////////////////////////////////////////////////////////////////////////////
 
