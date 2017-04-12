@@ -276,40 +276,48 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
      * @return номер недели
      */
     public int getCurrentWeek(){
-
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor cursor ;
         String sqlQuery = "SELECT * from " + TABLE_GLOBAL ;
         cursor = db.rawQuery(sqlQuery, null);
-        long dayCount;
         int weekCount;
+        //передвигаем курсор в начало,ч тоб получить значение
         cursor.moveToFirst();
 
-        int year = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0,4));
-        int month = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5,7));
-        int day = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
+        //определяем год, месяц и день начала обучения(берется из бд)
+        int startYear = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0,4));
+        int startMonth = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5,7));
+        int startDay = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
 
-        Date currentDate = Calendar.getInstance().getTime();
-        Date startDate = new Date(year-1900,month-1,day);
+        //определение текущего дня
+        Calendar currentDateCalendar = new GregorianCalendar().getInstance();
+        currentDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        long c = currentDate.getTime();
-        long s = startDate.getTime();
+        //определение дня начала обучения
+        Calendar startDateCalendar = new GregorianCalendar(startYear, startMonth-1, startDay);//месяц - 1, так как отсчет с 0
+        startDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        if(currentDate.after(startDate) || currentDate.equals(startDate)){
-            long difference = currentDate.getTime() - startDate.getTime();
+        //опредение дат в миллисекндах
+        long currentDateMilliseconds = currentDateCalendar.getTimeInMillis();
+        long startDateTimeMilliseconds = startDateCalendar.getTimeInMillis() ;
 
-            dayCount =  difference / 86400000;
-            //недели считает не правильно
-            weekCount = (int) dayCount / 7;
+        //проверка прошла ли дата начала (началось обучение или нет)
+        if(currentDateCalendar.getTime().after(startDateCalendar.getTime()) ||
+                currentDateCalendar.getTime().equals(startDateCalendar.getTime())){
+            //вычисляем разницу между датами в миллисекундах
+            long difference = currentDateMilliseconds - startDateTimeMilliseconds;
 
-// надо, чтоб считало недели не по дням, а по календарю.
-            // как вариант можно начальную дату ставить чтоб была первым днем недели, а текущая последним нем недели
-            //тогда можно будет делить на 7
+            //делим колво прошедших секунд с начала обучения на кол-во дней и +1, так как оно не учитывает первый день начала учебы
+            long dayCount =  difference / 86400000 + 1;
 
-        //    Weeks weeks = Weeks.weeksBetween(new DateTime(startDate), DateTime.now());
-          //  int weeksInYear = weeks.getWeeks();
+            //если полученно кол-во недели дробное, то округляем в большую сторону
+            if(((float) dayCount / 7) > ((int) dayCount / 7)){
+                weekCount = (int) dayCount / 7 + 1;
+            }else {
+                weekCount = (int) dayCount / 7;
+            }
         }else {
+            //если обучение еще не началось
             weekCount = 0;
         }
         return weekCount;
