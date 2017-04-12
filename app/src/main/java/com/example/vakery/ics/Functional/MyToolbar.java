@@ -14,8 +14,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import com.example.vakery.ics.DB.DatabaseHandler;
 import com.example.vakery.ics.LecturersActivity;
-import com.example.vakery.ics.LocalSettingsFile;
 import com.example.vakery.ics.MainActivity;
 import com.example.vakery.ics.MarksActivity;
 import com.example.vakery.ics.ProgramsActivity;
@@ -145,6 +146,7 @@ public class MyToolbar extends AppCompatActivity {//наследуемся от 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         LocalSettingsFile.clearUserInfo();
+                        new DatabaseHandler().DropDatabase();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null);
@@ -180,7 +182,7 @@ public class MyToolbar extends AppCompatActivity {//наследуемся от 
         if (id == R.id.refreshInfo) {
             Log.d(myLog,"Обновление данных");
 
-            downloadInfo.loadInfoWithoutLogin();
+            downloadInfo.updateInfo();
             return true;
         }
 

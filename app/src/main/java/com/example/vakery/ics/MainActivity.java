@@ -1,28 +1,19 @@
 package com.example.vakery.ics;
 
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
 import com.example.vakery.ics.DB.DatabaseHandler;
-import com.example.vakery.ics.Functional.DownloadInfo;
+import com.example.vakery.ics.Functional.LocalSettingsFile;
 import com.example.vakery.ics.Functional.Login;
 import com.example.vakery.ics.Functional.MyToolbar;
 import com.example.vakery.ics.Functional.Vars;
 import com.example.vakery.ics.PagerAdapters.SchedulePagerAdapter;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import com.example.vakery.ics.Entities.Lecturer;
 
 
 public class MainActivity extends MyToolbar {//наследуемся от MyToolbar, он выполняет все от AppCompatActivity и имеет метод создания Toolbar(createToolbar(String title))
@@ -74,8 +65,8 @@ public class MainActivity extends MyToolbar {//наследуемся от MyToo
         // задаем какую стр по порядку показывать. отнимаем -1 потому, что список дней начинается с 0
         pager.setCurrentItem(currentDayForPage - 1);
 
-        //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для экономии действий
-        Vars.fillTimeList(this);
+        //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для уменьшения кол-ва действий
+        Vars.fillTimeList();
 
         //checkForInformation();
     }

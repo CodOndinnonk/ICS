@@ -8,9 +8,23 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
+import com.example.vakery.ics.Entities.ICSSubject;
 import com.example.vakery.ics.Entities.Lecturer;
+import com.example.vakery.ics.Entities.Mark;
+import com.example.vakery.ics.Entities.Notification;
+import com.example.vakery.ics.Entities.Schedule;
+import com.example.vakery.ics.Entities.Subject;
+import com.example.vakery.ics.Entities.Time;
 import com.example.vakery.ics.Functional.Vars;
+
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
+
+import java.text.DateFormat;
+import java.util.GregorianCalendar;
 
 
 public class DatabaseHandler extends SQLiteOpenHelper  {
@@ -40,7 +54,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
     public static final String KEY_FULL_TITLE = "Full_title";//название поля date
     public static final String KEY_PERSONAL_LECTURER = "Lecturer_personal";//название поля date
 
-    public static final String TABLE_WEEK = "Week";//НЕЧЕТНАЯ
+    public static final String TABLE_WEEK = "Week";
     public static final String KEY_KIND_OF_WEEK = "Kind_of_week";//1- нечетная, 2- четная, 3- все недели
     public static final String KEY_DAY_OF_WEEK = "Day_of_week";//название поля date
     public static final String KEY_NUMBER_OF_SUBJECT_WEEK = "Number_of_subject_week";//название поля date
@@ -73,8 +87,9 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
     public static final String KEY_KIND = "Kind";//название поля id
     public static final String KEY_SUBJECT_INFO = "Extra_info";//название поля id
 
-
-
+    public static final String TABLE_GLOBAL = "Global";//название таблицы
+    public static final String KEY_START_DATE = "Start_date";//название поля id
+    public static final String KEY_NUMBER_OF_WEEKS = "Number_of_weeks";//название поля id
 
     public DatabaseHandler() {
         super(Vars.getContext(), DATABASE_NAME, null, DATABASE_VERSION);
@@ -162,17 +177,48 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
                 + ")";
         sqLiteDatabase.execSQL(CREATE_ICS_SUBJECTS_TABLE);
 
+        String CREATE_GLOBAL_TABLE = "CREATE TABLE " + TABLE_GLOBAL +
+                "("
+                + KEY_ID + " INTEGER NOT NULL PRIMARY KEY,"
+                + KEY_START_DATE + " DATE NOT NULL,"
+                + KEY_NUMBER_OF_WEEKS + " INTEGER NOT NULL"
+                + ")";
+        sqLiteDatabase.execSQL(CREATE_GLOBAL_TABLE);
         ////////////////////////////////////////////////////////////////////////////////
         //тестовая загрузка бд
-       FillDB fillDB = new FillDB(sqLiteDatabase);
-        fillDB.startFillDB();
+//       FillDB fillDB = new FillDB(sqLiteDatabase);
+//        fillDB.startFillDB();
 
     }
 
 
-    //при обновлении таблицы
+    /***
+     * Очистка таблицы
+     * @param tableName название таблицы, которую надо очистить
+     */
+    public void clearTable(String tableName){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+        db.execSQL("DELETE FROM " + tableName);
+    }
+
+
+    /***
+     * Обновление бд
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        DropDatabase();
+    }
+
+
+    /***
+     * Удаляет таблицы и содает их заново
+     */
+    public void DropDatabase(){
+        SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LECTURERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_SUBJECTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VISITING);
@@ -180,11 +226,135 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WEEK);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICS_SUBJECTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GLOBAL);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME);
         onCreate(db);
     }
 
 
+    /***
+     * Проверка на наличие информации в базе данных
+     * @return true -> есть данные, false -> нет данных
+     */
+    public boolean checkForInfo(){
+        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+        Cursor cursor ;
+        String sqlQuery = "SELECT *  FROM Week" ;
+        cursor = db.rawQuery(sqlQuery, null);
+        cursor.close();
+        if(cursor.getCount() > 0){
+            db.close();
+            return true;
+        }else {
+            db.close();
+            return false;
+        }
+    }
+
+//  ГЛОБАЛЬНАЯ ИНФОРМАЦИЯ  /////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление глобальной информации, полученной от сервера
+     * @param id уникальный идентификатор записи на сервере
+     * @param startDate дата начала учебного процесса
+     * @param numberOfWeeks кол-во учебных недель
+     */
+    public void addGlobalInfo(int id, String startDate, int numberOfWeeks){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ID, id);
+        values.put(KEY_START_DATE, startDate);
+        values.put(KEY_NUMBER_OF_WEEKS, numberOfWeeks);
+
+        db.insert(TABLE_GLOBAL, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+
+    }
+
+    /***
+     * Возвращает текущий номер учебной недели
+     * @return номер недели
+     */
+    public int getCurrentWeek(){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor ;
+        String sqlQuery = "SELECT * from " + TABLE_GLOBAL ;
+        cursor = db.rawQuery(sqlQuery, null);
+        long dayCount;
+        int weekCount;
+        cursor.moveToFirst();
+
+        int year = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0,4));
+        int month = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5,7));
+        int day = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
+
+        Date currentDate = Calendar.getInstance().getTime();
+        Date startDate = new Date(year-1900,month-1,day);
+
+        long c = currentDate.getTime();
+        long s = startDate.getTime();
+
+        if(currentDate.after(startDate) || currentDate.equals(startDate)){
+            long difference = currentDate.getTime() - startDate.getTime();
+
+            dayCount =  difference / 86400000;
+            //недели считает не правильно
+            weekCount = (int) dayCount / 7;
+
+// надо, чтоб считало недели не по дням, а по календарю.
+            // как вариант можно начальную дату ставить чтоб была первым днем недели, а текущая последним нем недели
+            //тогда можно будет делить на 7
+
+        //    Weeks weeks = Weeks.weeksBetween(new DateTime(startDate), DateTime.now());
+          //  int weeksInYear = weeks.getWeeks();
+        }else {
+            weekCount = 0;
+        }
+        return weekCount;
+    }
+
+//  УВЕДОМЛЕНИЯ  ///////////////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление уведомления в локальную бд
+     * @param notification
+     */
+    public void addNotification(Notification notification){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_NOTIFICATION_ID, notification.getmId());
+        values.put(KEY_SENDER, notification.getmSenderId());
+        values.put(KEY_CONTENT, notification.getmContent());
+        values.put(KEY_IS_READ, notification.getmISRead());
+
+        db.insert(TABLE_NOTIFICATIONS, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
+
+
 //  РАСПИСАНИЕ  ////////////////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавления расписания на день
+     * @param schedule
+     */
+    public void addSchedule(Schedule schedule){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ID, schedule.getmId());
+        values.put(KEY_KIND_OF_WEEK, schedule.getmKindOfWeek());
+        values.put(KEY_DAY_OF_WEEK, schedule.getmDayOfWeek());
+        values.put(KEY_NUMBER_OF_SUBJECT_WEEK, schedule.getmNumberOfSubject());
+        values.put(KEY_SUBJECT, schedule.getmSubjectId());
+        values.put(KEY_TYPE_OF_SUBJECT, schedule.getmTypeOfSubject());
+        values.put(KEY_ROOM_NUMBER, schedule.getmRoomNumber());
+
+        db.insert(TABLE_WEEK, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
+
 
     /***
      * берем расписание на заданный день заанной недели
@@ -241,8 +411,42 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
     }
 
 
+    /***
+     * Добавление предмета в бд (обычные прелметы)
+     * @param subject
+     */
+    public void addPersonalSubject(Subject subject){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_SUBJECT_ID, subject.getmId());
+        values.put(KEY_SHORT_TITLE, subject.getmShortTitle());
+        values.put(KEY_FULL_TITLE, subject.getmFullTitle());
+        values.put(KEY_PERSONAL_LECTURER, subject.getmLecturerId());
+
+        db.insert(TABLE_PERSONAL_SUBJECTS, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
+
 
 //  КАФЕДРА ИКС ////////////////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление предмета в бд
+     * @param icsSubject объект предмета
+     */
+    public void addICSSubject(ICSSubject icsSubject){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ICS_SUBJECT_ID, icsSubject.getMid());
+        values.put(KEY_TITLE, icsSubject.getmTitle());
+        values.put(KEY_ICS_LECTURER, icsSubject.getmLecturerId());
+        values.put(KEY_SEMESTERS, icsSubject.getmSemesters());
+        values.put(KEY_KIND, icsSubject.getmKind());
+        values.put(KEY_SUBJECT_INFO, icsSubject.getmExtraInfo());
+
+        db.insert(TABLE_ICS_SUBJECTS, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
 
 
     /***
@@ -291,7 +495,10 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
 
 //  ПРЕПОДАВАТЕЛИ  /////////////////////////////////////////////////////////////////////////////////
 
-
+    /***
+     * Добавление препдавателя в бд
+     * @param lecturer объект "преподаватель"
+     */
     public void addLecturer(Lecturer lecturer){//дописать все поля
         SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
         ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
@@ -305,6 +512,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.insert(TABLE_LECTURERS, null, values);//добавление в таблицу шаблона, заполненного ранее
         db.close();
     }
+
 
     /***
      * берем всех преподавателей
@@ -394,6 +602,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         } else {
             Log.d(myLog, "Cursor is null");
         }
+        cursor.close();
+        db.close();
         return lecturer;
     }
 
@@ -418,15 +628,32 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
                     lecturersId.add(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_LECTURER_ID)));
                 } while (cursor.moveToNext());
             }
-        } else
+        } else {
             Log.d(logQuery, "Cursor is null");
-
+        }
         db.close();
+        cursor.close();
         return lecturersId;
     }
 
 
 //  ОЦЕНКИ  ////////////////////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление оценки по предмету
+     * @param mark
+     */
+    public void addMark(Mark mark){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ID, mark.getmId());
+        values.put(KEY_SUBJECT, mark.getmSubjectId());
+        values.put(KEY_1_CHAPTER, mark.getmChapter1());
+        values.put(KEY_2_CHAPTER, mark.getmChapter2());
+
+        db.insert(TABLE_MARKS, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
 
 
     /***
@@ -451,6 +678,22 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
 
 
 //  ВРЕМЯ  /////////////////////////////////////////////////////////////////////////////////////////
+
+    /***
+     * Добавление времени начала и окончания пары
+     * @param time
+     */
+    public void addTime(Time time){//дописать все поля
+        SQLiteDatabase db = this.getWritableDatabase();//формат работы с БД
+        ContentValues values = new ContentValues();//создание переменной, позволяющей создать шаблот "записи" и заполниять его для добавления в БД
+        values.put(KEY_ID, time.getmId());
+        values.put(KEY_NUMBER_OF_SUBJECT_TIME, time.getmNumberOfSubject());
+        values.put(KEY_TIME_START, time.getmTimeStart());
+        values.put(KEY_TIME_FINISH, time.getmTimeEnd());
+
+        db.insert(TABLE_TIME, null, values);//добавление в таблицу шаблона, заполненного ранее
+        db.close();
+    }
 
 
     /***

@@ -10,14 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.vakery.ics.LocalSettingsFile;
 import com.example.vakery.ics.R;
 
 public class Login extends DialogFragment  {
     private View form = null;
 
 
-    // содание диалога для регистрации
+    /***
+     * Содание диалога для регистрации
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -41,6 +44,7 @@ public class Login extends DialogFragment  {
                     Toast.makeText(getContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                 }else {
                     LocalSettingsFile.setUserInfo(enterName.getText().toString(), enterSurname.getText().toString(), enterGroup.getText().toString());
+                    new DownloadInfo().updateInfo();
                     //закрываем диалог
                     getDialog().dismiss();
                 }

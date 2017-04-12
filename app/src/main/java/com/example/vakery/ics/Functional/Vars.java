@@ -24,7 +24,7 @@ public  class Vars {
 
     private static int currentKindOfWeek = 0;//текущий тип недели, отображаемый в расписании
 
-    //список с временем начала и конца всех пар
+    //список с временем начала и конца всех пар (находится здесь так, как этодействие происходит один раз за цикл жизни)
     private  static ArrayList<TimeSchedule> listOfTime = new ArrayList<TimeSchedule>();
 
     //путь к папке, в которой хранятся фотографии
@@ -55,7 +55,10 @@ public  class Vars {
         return imageFileDir;
     }
 
-
+    /***
+     * установка текущего типа недели
+     * @param setCurrentKindOfWeek число 1,2,3
+     */
     public static void setCurrentKindOfWeek(int setCurrentKindOfWeek) {
         Vars.currentKindOfWeek = setCurrentKindOfWeek;
         Log.d(myLog, "Vars.currentKindOfWeek = " + currentKindOfWeek);
@@ -72,7 +75,10 @@ public  class Vars {
     }
 
 
-    public static void fillTimeList(Context context){
+    /***
+     * Заполнение списка времени пар
+     */
+    public static void fillTimeList(){
         DatabaseHandler db = new DatabaseHandler();
         Cursor cursor = db.getTime();
         if (cursor != null) {
@@ -93,7 +99,11 @@ public  class Vars {
     }
 
 
-    //возвращает строку с временем начала и конца пары
+    /***
+     * возвращает строку с временем начала и конца пары
+     * @param numberOfSubject номер интересующей пары
+     * @return
+     */
     public static String getTimeInfo(int numberOfSubject){
         String result = "-";
         //поиск нужной нам пары в списке

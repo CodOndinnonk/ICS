@@ -77,35 +77,76 @@ public class ScheduleListFragment extends Fragment {
         return result;
     }
 
-
+    /***
+     * Заполнение листа пейджера контентом
+     * @param inflater
+     * @param container
+     * @return
+     */
     public View ScheduleOfDay(LayoutInflater inflater,ViewGroup container){
-        View view=inflater.inflate(R.layout.schedule_list_fragment, container, false);
-        TextView dayOfWeek = (TextView)view.findViewById(R.id.dayOfWeekText);
-        lvSchedule = (ListView)view.findViewById(R.id.listViewOfSchedule);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBarOfWeek);
+        //проверка на воскресенье
+        if(pageNumber == 6){
+            View view = inflater.inflate(R.layout.schedule_list_fragment_sunday, container, false);
 
-        //настройка прогрессбара
-        progressBar.setMax(7);
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setProgress(pageNumber + 1);
+            TextView dayOfWeek = (TextView) view.findViewById(R.id.dayOfWeekText);
+            progressBar = (ProgressBar) view.findViewById(R.id.progressBarOfWeek);
 
-        kindWeekButton = (Button)view.findViewById(R.id.kindOfWeekButton);
-        kindWeekButton.setOnClickListener(onButtonClickListener);
+            //настройка прогрессбара
+            progressBar.setMax(7);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(pageNumber + 1);
+
+            kindWeekButton = (Button) view.findViewById(R.id.kindOfWeekButton);
+            kindWeekButton.setOnClickListener(onButtonClickListener);
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-        //определение текущей недели
-        if(Vars.getCurrentKindOfWeek() == 0) {
-            Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
-        }
+            //определение текущей недели
+            if (Vars.getCurrentKindOfWeek() == 0) {
+                Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
+            }
 
-        //слушатель нажатия на пункт списка расписания
-        lvSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            fillList();//в воскресенье используется для корректной работы кнопки смены типа недели
+
+            //добавляем к номеру стр 2 потому, что +1(так как первый день вс) +1(тут массив начинается с 0 а не 1)
+            int numberDayInWeek = pageNumber + 2;
+            //если № дня больше 7, то это вс (вс = 6 + 2 = 8), а по календарю он 1
+            if (numberDayInWeek > 7) {
+                numberDayInWeek = 1;
+            }
+            // берем название текующего дня недели
+            String strDayOfWeek = new DateFormatSymbols().getWeekdays()[numberDayInWeek];
+            dayOfWeek.setText(strDayOfWeek);
+
+            return view;
+        }else {
+            View view = inflater.inflate(R.layout.schedule_list_fragment, container, false);
+            TextView dayOfWeek = (TextView) view.findViewById(R.id.dayOfWeekText);
+            lvSchedule = (ListView) view.findViewById(R.id.listViewOfSchedule);
+            progressBar = (ProgressBar) view.findViewById(R.id.progressBarOfWeek);
+
+            //настройка прогрессбара
+            progressBar.setMax(7);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(pageNumber + 1);
+
+            kindWeekButton = (Button) view.findViewById(R.id.kindOfWeekButton);
+            kindWeekButton.setOnClickListener(onButtonClickListener);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+            //определение текущей недели
+            if (Vars.getCurrentKindOfWeek() == 0) {
+                Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
+            }
+
+            //слушатель нажатия на пункт списка расписания
+            lvSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if ((listOfSubjects.get(position).getmShortTitle().length() < 0)) {
                         //если нажали на "нет пары"
                         Toast.makeText(getContext(), getString(R.string.no_lesson), Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         //создание интента для перехода из не активити
                         dialogIntent = new Intent(getContext(), SubjectInfoActivity.class);
                         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -115,27 +156,32 @@ public class ScheduleListFragment extends Fragment {
                         startActivity(dialogIntent);
                     }
                 }
-        });
+            });
 
-        fillList();
+            fillList();
 
-        //назначаем адаптер для списка с расписанием
-        listAdapter = new ScheduleListAdapter(this.getContext(), listOfSubjects);
-        lvSchedule.setAdapter(listAdapter);
+            //назначаем адаптер для списка с расписанием
+            listAdapter = new ScheduleListAdapter(this.getContext(), listOfSubjects);
+            lvSchedule.setAdapter(listAdapter);
 
-        //добавляем к номеру стр 2 потому, что +1(так как первый день вс) +1(тут массив начинается с 0 а не 1)
-        int numberDayInWeek = pageNumber + 2;
-        //если № дня больше 7, то это вс (вс = 6 + 2 = 8), а по календарю он 1
-        if(numberDayInWeek > 7){numberDayInWeek = 1;}
-        // берем название текующего дня недели
-        String strDayOfWeek = new DateFormatSymbols().getWeekdays()[numberDayInWeek];
-        dayOfWeek.setText(strDayOfWeek);
+            //добавляем к номеру стр 2 потому, что +1(так как первый день вс) +1(тут массив начинается с 0 а не 1)
+            int numberDayInWeek = pageNumber + 2;
+            //если № дня больше 7, то это вс (вс = 6 + 2 = 8), а по календарю он 1
+            if (numberDayInWeek > 7) {
+                numberDayInWeek = 1;
+            }
+            // берем название текующего дня недели
+            String strDayOfWeek = new DateFormatSymbols().getWeekdays()[numberDayInWeek];
+            dayOfWeek.setText(strDayOfWeek);
 
-        return view;
+            return view;
+        }
     }
 
 
-    //заполнение списка предметов
+    /***
+     * Заполнение списка предметов
+     */
     public void fillList(){
         //очищаем от предыдущих данных, на случай обновления
         listOfSubjects.clear();
@@ -147,12 +193,14 @@ public class ScheduleListFragment extends Fragment {
             kindWeekButton.setText(R.string.week_even);
         }
 
-        Cursor cursor = db.getSchedule(Vars.getCurrentKindOfWeek(),pageNumber+1);
+        //если выбрали не воскресенье, то получаем расписание на день
+        if(pageNumber != 6) {
+            Cursor cursor = db.getSchedule(Vars.getCurrentKindOfWeek(), pageNumber + 1);
 
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    SubjectForScheduleList subjectForScheduleList = new SubjectForScheduleList();
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        SubjectForScheduleList subjectForScheduleList = new SubjectForScheduleList();
 
                         subjectForScheduleList.setmNumberOfSubject(cursor.getInt(cursor.getColumnIndex(DatabaseHandler.KEY_NUMBER_OF_SUBJECT_WEEK)));
                         subjectForScheduleList.setmType(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_TYPE_OF_SUBJECT)));
@@ -164,42 +212,45 @@ public class ScheduleListFragment extends Fragment {
                         subjectForScheduleList.setmName(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME)));
                         subjectForScheduleList.setmPatronymic(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_PATRONYMIC)));
 
-                    listOfSubjects.add(subjectForScheduleList);
-                } while (cursor.moveToNext());
-            }
-        } else {
-            Log.d(myLog, "Cursor is null");
-        }
-        //сортровка списка предметов по номеру пары
-        Collections.sort(listOfSubjects, new MyComparator ());
-
-        int flag =0;//переменная-счетчик для определения колва пройденных предметов
-        //создаем временный список для модификаций, и в него клонируем основной список (клонируем, чтоб небыло привязки)
-        ArrayList<SubjectForScheduleList> forPrepare = (ArrayList<SubjectForScheduleList>) listOfSubjects.clone();
-
-        //try потому, что не во все дни есть расписание и чтоб не выпадала ошибка
-        try {
-            listOfSubjects.clear();//чистим основной лис, чтоб заполнить его с наличием пустых пар
-            for(int i = 1; i < 8; i++){//вместо 8 может быть любое число
-                if(i == forPrepare.get(flag).getmNumberOfSubject()){//если текущая пара по счету такая же как и в списе, то записываем ее в список
-                    listOfSubjects.add(forPrepare.get(flag));
-                    flag++;//для перехода к следующему предмету
-                }else {//если номер пар не совал (к примеру у нас i=1 пара, а в списе первый элемент = 3 паре) то добавляем заглушку
-                    listOfSubjects.add(new SubjectForScheduleList(i,""));//заглушка с номером пары
+                        listOfSubjects.add(subjectForScheduleList);
+                    } while (cursor.moveToNext());
                 }
-                //если мы просмотрели все предметы на день. считанные из бд, то выходим из цикла
-                if(flag == forPrepare.size()){
-                    break;
-                }
+            } else {
+                Log.d(myLog, "Cursor is null");
             }
-        } catch (Exception e) {
-            Log.d(myLog, "Выходной день в котором нет расписания");
+            //сортровка списка предметов по номеру пары
+            Collections.sort(listOfSubjects, new MyComparator());
+
+            int flag = 0;//переменная-счетчик для определения колва пройденных предметов
+            //создаем временный список для модификаций, и в него клонируем основной список (клонируем, чтоб небыло привязки)
+            ArrayList<SubjectForScheduleList> forPrepare = (ArrayList<SubjectForScheduleList>) listOfSubjects.clone();
+
+            //try потому, что не во все дни есть расписание и чтоб не выпадала ошибка
+            try {
+                listOfSubjects.clear();//чистим основной лис, чтоб заполнить его с наличием пустых пар
+                for (int i = 1; i < 8; i++) {//вместо 8 может быть любое число
+                    if (i == forPrepare.get(flag).getmNumberOfSubject()) {//если текущая пара по счету такая же как и в списе, то записываем ее в список
+                        listOfSubjects.add(forPrepare.get(flag));
+                        flag++;//для перехода к следующему предмету
+                    } else {//если номер пар не совал (к примеру у нас i=1 пара, а в списе первый элемент = 3 паре) то добавляем заглушку
+                        listOfSubjects.add(new SubjectForScheduleList(i, ""));//заглушка с номером пары
+                    }
+                    //если мы просмотрели все предметы на день. считанные из бд, то выходим из цикла
+                    if (flag == forPrepare.size()) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                Log.d(myLog, "Выходной день в котором нет расписания");
+            }
         }
 
     }
 
 
-    // класс реализующий сортировку обьектов по заданному полю
+    /***
+     * Класс реализующий сортировку обьектов по заданному полю
+     */
     class MyComparator implements Comparator<SubjectForScheduleList> {
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
@@ -209,10 +260,13 @@ public class ScheduleListFragment extends Fragment {
     }
 
 
-View.OnClickListener onButtonClickListener = new View.OnClickListener() {
+    /***
+     * Обработчик нажатия на кнопку смены типа недели
+     */
+    View.OnClickListener onButtonClickListener = new View.OnClickListener() {
     @Override
     public void onClick(View view) {
-        //изменяем жначение выбранного типа недели
+        //изменяем значение выбранного типа недели
         switch (Vars.getCurrentKindOfWeek()) {
             case Vars.WEEK_ODD:
                 Vars.setCurrentKindOfWeek(Vars.WEEK_EVEN);
@@ -222,9 +276,11 @@ View.OnClickListener onButtonClickListener = new View.OnClickListener() {
                 break;
         }
 
-        fillList();//вызываем метод для обновления данных о предметах
-        listAdapter.notifyDataSetChanged();//сообщаем адаптеру, что внесены изменения, чтоб он обновил список
-
+        //проверка на воскресенье. Если воскресенье, то не надо получать расписание
+        if(pageNumber != 6) {
+            fillList();//вызываем метод для обновления данных о предметах
+            listAdapter.notifyDataSetChanged();//сообщаем адаптеру, что внесены изменения, чтоб он обновил список
+        }
         if (mActivity != null) {
             //вызываем метод, осуществляющий обновление фрагментов в пейджере(используется для изменения типа недели дл всех страниц пейджера)
             mActivity.notifyAdapter(pageNumber);
