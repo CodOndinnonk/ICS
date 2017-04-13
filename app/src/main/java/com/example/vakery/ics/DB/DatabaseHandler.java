@@ -271,6 +271,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
 
     }
 
+
     /***
      * Возвращает текущий номер учебной недели
      * @return номер недели

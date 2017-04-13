@@ -99,11 +99,12 @@ public class ScheduleListFragment extends Fragment {
             kindWeekButton = (Button) view.findViewById(R.id.kindOfWeekButton);
             kindWeekButton.setOnClickListener(onButtonClickListener);
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
             //определение текущей недели
             if (Vars.getCurrentKindOfWeek() == 0) {
-                Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
+                //если текущая неделя еще небыла задана, то предеяем ее (берем екущий номер недели и делаем mod 2)
+                int kindOfWeek = new DatabaseHandler().getCurrentWeek() % 2;
+                if(kindOfWeek == 0){kindOfWeek = 2;}
+                Vars.setCurrentKindOfWeek(kindOfWeek);
             }
 
             fillList();//в воскресенье используется для корректной работы кнопки смены типа недели
@@ -133,10 +134,12 @@ public class ScheduleListFragment extends Fragment {
             kindWeekButton = (Button) view.findViewById(R.id.kindOfWeekButton);
             kindWeekButton.setOnClickListener(onButtonClickListener);
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
             //определение текущей недели
             if (Vars.getCurrentKindOfWeek() == 0) {
-                Vars.setCurrentKindOfWeek(Vars.WEEK_ODD);//заглушка
+                //если текущая неделя еще небыла задана, то предеяем ее (берем екущий номер недели и делаем mod 2)
+                int kindOfWeek = new DatabaseHandler().getCurrentWeek() % 2;
+                if(kindOfWeek == 0){kindOfWeek = 2;}
+                Vars.setCurrentKindOfWeek(kindOfWeek);
             }
 
             //слушатель нажатия на пункт списка расписания

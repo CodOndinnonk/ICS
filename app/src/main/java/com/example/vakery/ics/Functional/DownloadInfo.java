@@ -397,8 +397,6 @@ public class DownloadInfo {
         public void run() {
             DatabaseHandler db = new DatabaseHandler();
 
-            db.getCurrentWeek();
-
             String loadLink = "http://onpu-iks.pe.hu/php/api/getDataWithLogin.php?studentId="+LocalSettingsFile.getUserId()+
                     "&groupId="+LocalSettingsFile.getGroupId()+"&course="+LocalSettingsFile.getUserCourse();
             try {
