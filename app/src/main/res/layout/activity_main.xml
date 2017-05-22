@@ -21,7 +21,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.vakery.ics.MainActivity"
+        tools:context="com.example.vakery.ics.Presentation.MainActivity"
         android:background="@mipmap/bg_main"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
