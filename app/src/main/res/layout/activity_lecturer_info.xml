@@ -5,7 +5,7 @@
     android:id="@+id/activity_lecturer_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vakery.ics.LecturerInfoActivity"
+    tools:context="com.example.vakery.ics.Presentation.LecturerInfoActivity"
     android:paddingTop="25dp"
     android:orientation="vertical">
 
