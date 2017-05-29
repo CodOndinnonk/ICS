@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="25dp"
-    tools:context="com.example.vakery.ics.LecturersActivity">
+    tools:context="com.example.vakery.ics.Presentation.LecturersActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

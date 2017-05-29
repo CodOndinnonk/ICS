@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Presentation.MainActivity"
             android:screenOrientation="portrait">
             >
             <intent-filter>
@@ -25,12 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SubjectInfoActivity" />
-        <activity android:name=".LecturerInfoActivity" />
-        <activity android:name=".LecturersActivity" />
-        <activity android:name=".SubjectsActivity" />
-        <activity android:name=".MarksActivity" />
-        <activity android:name=".ProgramsActivity" />
+        <activity android:name=".Presentation.SubjectInfoActivity" />
+        <activity android:name=".Presentation.LecturerInfoActivity" />
+        <activity android:name=".Presentation.LecturersActivity" />
+        <activity android:name=".Presentation.SubjectsActivity" />
+        <activity android:name=".Presentation.MarksActivity" />
+        <activity android:name=".Presentation.ProgramsActivity" />
         <activity android:name=".EntropyCalculator"></activity>
     </application>
 

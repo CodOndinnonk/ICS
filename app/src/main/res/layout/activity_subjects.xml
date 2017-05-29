@@ -4,7 +4,7 @@
     android:id="@+id/activity_subjects"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vakery.ics.SubjectsActivity"
+    tools:context="com.example.vakery.ics.Presentation.SubjectsActivity"
     android:paddingTop="25dp"
     android:orientation="vertical">
 
