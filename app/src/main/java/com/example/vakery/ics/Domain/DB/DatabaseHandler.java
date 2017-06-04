@@ -231,8 +231,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
      * Проверка на наличие информации в базе данных
      * @return true -> есть данные, false -> нет данных
      */
-    public boolean checkForInfo(){
-        SQLiteDatabase db = this.getReadableDatabase();//формат работы с БД
+    public static boolean checkForInfo(){
+        SQLiteDatabase db = new DatabaseHandler().getReadableDatabase();//формат работы с БД
         Cursor cursor ;
         String sqlQuery = "SELECT *  FROM Week" ;
         cursor = db.rawQuery(sqlQuery, null);
@@ -272,51 +272,54 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
      * @return номер недели
      */
     public int getCurrentWeek(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor ;
-        String sqlQuery = "SELECT * from " + TABLE_GLOBAL ;
-        cursor = db.rawQuery(sqlQuery, null);
-        int weekCount;
-        //передвигаем курсор в начало,ч тоб получить значение
-        cursor.moveToFirst();
+       try {
+           SQLiteDatabase db = this.getReadableDatabase();
+           Cursor cursor;
+           String sqlQuery = "SELECT * from " + TABLE_GLOBAL;
+           cursor = db.rawQuery(sqlQuery, null);
+           int weekCount;
+           //передвигаем курсор в начало,ч тоб получить значение
+           cursor.moveToFirst();
 
-        //определяем год, месяц и день начала обучения(берется из бд)
-        int startYear = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0,4));
-        int startMonth = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5,7));
-        int startDay = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
+           //определяем год, месяц и день начала обучения(берется из бд)
+           int startYear = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(0, 4));
+           int startMonth = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(5, 7));
+           int startDay = Integer.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_START_DATE)).substring(8));
 
-        //определение текущего дня
-        Calendar currentDateCalendar = new GregorianCalendar().getInstance();
-        currentDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+           //определение текущего дня
+           Calendar currentDateCalendar = new GregorianCalendar().getInstance();
+           currentDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        //определение дня начала обучения
-        Calendar startDateCalendar = new GregorianCalendar(startYear, startMonth-1, startDay);//месяц - 1, так как отсчет с 0
-        startDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+           //определение дня начала обучения
+           Calendar startDateCalendar = new GregorianCalendar(startYear, startMonth - 1, startDay);//месяц - 1, так как отсчет с 0
+           startDateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        //опредение дат в миллисекндах
-        long currentDateMilliseconds = currentDateCalendar.getTimeInMillis();
-        long startDateTimeMilliseconds = startDateCalendar.getTimeInMillis() ;
+           //опредение дат в миллисекндах
+           long currentDateMilliseconds = currentDateCalendar.getTimeInMillis();
+           long startDateTimeMilliseconds = startDateCalendar.getTimeInMillis();
 
-        //проверка прошла ли дата начала (началось обучение или нет)
-        if(currentDateCalendar.getTime().after(startDateCalendar.getTime()) ||
-                currentDateCalendar.getTime().equals(startDateCalendar.getTime())){
-            //вычисляем разницу между датами в миллисекундах
-            long difference = currentDateMilliseconds - startDateTimeMilliseconds;
+           //проверка прошла ли дата начала (началось обучение или нет)
+           if (currentDateCalendar.getTime().after(startDateCalendar.getTime()) ||
+                   currentDateCalendar.getTime().equals(startDateCalendar.getTime())) {
+               //вычисляем разницу между датами в миллисекундах
+               long difference = currentDateMilliseconds - startDateTimeMilliseconds;
 
-            //делим колво прошедших секунд с начала обучения на кол-во дней и +1, так как оно не учитывает первый день начала учебы
-            long dayCount =  difference / 86400000 + 1;
+               //делим колво прошедших секунд с начала обучения на кол-во дней и +1, так как оно не учитывает первый день начала учебы
+               long dayCount = difference / 86400000 + 1;
 
-            //если полученно кол-во недели дробное, то округляем в большую сторону
-            if(((float) dayCount / 7) > ((int) dayCount / 7)){
-                weekCount = (int) dayCount / 7 + 1;
-            }else {
-                weekCount = (int) dayCount / 7;
-            }
-        }else {
-            //если обучение еще не началось
-            weekCount = 0;
-        }
-        return weekCount;
+               //если полученно кол-во недели дробное, то округляем в большую сторону
+               if (((float) dayCount / 7) > ((int) dayCount / 7)) {
+                   weekCount = (int) dayCount / 7 + 1;
+               } else {
+                   weekCount = (int) dayCount / 7;
+               }
+           } else {
+               //если обучение еще не началось
+               weekCount = 0;
+           }
+           return weekCount;
+       }catch (Exception e){Log.e(Vars.myLog,e.toString());
+       return 0;}
     }
 
 

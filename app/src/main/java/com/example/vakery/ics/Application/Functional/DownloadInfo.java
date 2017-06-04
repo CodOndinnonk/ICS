@@ -97,53 +97,53 @@ public class DownloadInfo {
 
         // загрузка изображений
 
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            Log.d(myLog, "SD-карта не доступна: " + Environment.getExternalStorageState());
-            return;
-        }
-
-        //проверяем существует ли папка для хранения фото, берем ссылку на папку (File) из Vars
-        if (!Vars.getImageFileDir().exists()) {
-            Log.d(myLog, "директории нет, создаем ее");
-            // создаем каталог
-            Vars.getImageFileDir().mkdirs();
-        } else {
-        }
-
-        for (int i = 0; i < lecturersId.size(); i++) {
-            //формируем имя файла для проверки его наличия
-            String name = "lecturer_" + lecturersId.get(i).toString() + ".png";
-            try {
-                //проверяем наличие фотографии в папке
-                if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
-                    //создаем экземпляр преподавателя с id и Photo_url
-                    listOfLecturers.add(new Lecturer(LecturerFactory.getLecturer(lecturersId.get(i)).getmId(), LecturerFactory.getLecturer(lecturersId.get(i)).getmPhoto()));
-                } else {
-                }
-            } catch (Exception e) {
-                Log.d(myLog, "Ошибка проверки наличия фото");
-            }
-        }
-        //если лист с преподавателями, которых надо скачать не пустой
-        if (listOfLecturers.size() > 0) {
-            //проверка на наличие интернет соединения
-            if (checkInternetConnection(Vars.getContext())) {
-
-                //создаем фоновый поток, чтоб основной не подвисал
-                //Thread t = new Thread(new Runnable() {
-                //    public void run() {
-                this.loadImg(listOfLecturers);
-                //     }
-//            });
-//            //запуск потока
-//            t.start();
-            } else {
-                Log.d(myLog, "отсутствует интернет соединение");
-                Toast.makeText(Vars.getContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
-            }
-        }
+//        // проверяем доступность SD
+//        if (!Environment.getExternalStorageState().equals(
+//                Environment.MEDIA_MOUNTED)) {
+//            Log.d(myLog, "SD-карта не доступна: " + Environment.getExternalStorageState());
+//            return;
+//        }
+//
+//        //проверяем существует ли папка для хранения фото, берем ссылку на папку (File) из Vars
+//        if (!Vars.getImageFileDir().exists()) {
+//            Log.d(myLog, "директории нет, создаем ее");
+//            // создаем каталог
+//            Vars.getImageFileDir().mkdirs();
+//        } else {
+//        }
+//
+//        for (int i = 0; i < lecturersId.size(); i++) {
+//            //формируем имя файла для проверки его наличия
+//            String name = "lecturer_" + lecturersId.get(i).toString() + ".png";
+//            try {
+//                //проверяем наличие фотографии в папке
+//                if (!new File(Vars.getImageFileDir() + File.separator + name).exists()) {
+//                    //создаем экземпляр преподавателя с id и Photo_url
+//                    listOfLecturers.add(new Lecturer(LecturerFactory.getLecturer(lecturersId.get(i)).getmId(), LecturerFactory.getLecturer(lecturersId.get(i)).getmPhoto()));
+//                } else {
+//                }
+//            } catch (Exception e) {
+//                Log.d(myLog, "Ошибка проверки наличия фото");
+//            }
+//        }
+//        //если лист с преподавателями, которых надо скачать не пустой
+//        if (listOfLecturers.size() > 0) {
+//            //проверка на наличие интернет соединения
+//            if (checkInternetConnection(Vars.getContext())) {
+//
+//                //создаем фоновый поток, чтоб основной не подвисал
+//                //Thread t = new Thread(new Runnable() {
+//                //    public void run() {
+//                this.loadImg(listOfLecturers);
+//                //     }
+////            });
+////            //запуск потока
+////            t.start();
+//            } else {
+//                Log.d(myLog, "отсутствует интернет соединение");
+//                Toast.makeText(Vars.getContext(), R.string.no_internet_connection_info, Toast.LENGTH_LONG).show();
+//            }
+//        }
         // загрузка данных
         if(db.checkForInfo()){
             //если информация в бд есть, то ничего не делаем

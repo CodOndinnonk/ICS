@@ -1,7 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/material_drawer_selected"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,51 +13,53 @@
     </LinearLayout>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
         android:id="@+id/enterName"
-        android:textColor="@android:color/black"
-        android:hint="@string/student_name" />
-
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
         android:ems="10"
+        android:hint="@string/student_name"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/black" />
+
+    <EditText
         android:id="@+id/enterSurname"
-        android:textColor="@android:color/black"
-        android:hint="@string/student_surname" />
-
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/enterGroup"
-        android:textColor="@android:color/black"
-        android:hint="@string/student_group" />
+        android:hint="@string/student_surname"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/black" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <Button
-            android:text="@android:string/no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/negativeButton"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="@android:string/ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/pozitivButton"
             android:layout_weight="1"
-            android:onClick="onPositiveClick" />
+            android:padding="5dp"
+            android:text="@android:string/no" />
+
+        <Button
+            android:id="@+id/pozitivButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onPositiveClick"
+            android:padding="5dp"
+            android:text="@android:string/ok" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/enterGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/student_group"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/black" />
 
 </LinearLayout>

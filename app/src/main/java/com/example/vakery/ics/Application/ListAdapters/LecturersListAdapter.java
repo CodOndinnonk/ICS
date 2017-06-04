@@ -77,7 +77,7 @@ public class LecturersListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.lPatronymic)).setText(lecturerByPosition.getmPatronymic());
 
         Picasso.with(this.mContext) //передаем контекст приложения
-                .load( "https://avatanplus.com/files/resources/mid/569d18a44d31a15255a841dc.png") //адрес изображения
+                .load( "https://www.virtualtur.md/public/images/no-avatar.png") //адрес изображения
                 .into(imageView); //ссылка на ImageView
 
         return view;

@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
 import com.eftimoff.viewpagertransformers.DepthPageTransformer;
+import com.example.vakery.ics.Application.Functional.DownloadInfo;
 import com.example.vakery.ics.Domain.DB.DatabaseHandler;
 import com.example.vakery.ics.Application.Functional.LocalSettingsFile;
 import com.example.vakery.ics.Application.Functional.Login;
@@ -69,7 +70,7 @@ public class MainActivity extends MyToolbar {//наследуемся от MyToo
         //так как расписание пар по времени не меняется часто, то заполняем его только при включении приложения для уменьшения кол-ва действий
         Vars.fillTimeList();
 
-        //checkForInformation();
+        new DownloadInfo().checkForInformation();
     }
 
 
