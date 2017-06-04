@@ -18,7 +18,6 @@ public class MyToolbarTest {
 
     MyToolbar mock  = mock(MyToolbar.class);
 
-
     @Test
     public void testMethodsCall(){
         mock.prepareForExit();
