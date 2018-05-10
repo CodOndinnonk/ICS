@@ -181,8 +181,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         sqLiteDatabase.execSQL(CREATE_GLOBAL_TABLE);
         ////////////////////////////////////////////////////////////////////////////////
         //тестовая загрузка бд
-//       FillDB fillDB = new FillDB(sqLiteDatabase);
-//        fillDB.startFillDB();
+       FillDB fillDB = new FillDB(sqLiteDatabase);
+       fillDB.startFillDB();
 
     }
 
@@ -236,7 +236,6 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         Cursor cursor ;
         String sqlQuery = "SELECT *  FROM Week" ;
         cursor = db.rawQuery(sqlQuery, null);
-        cursor.close();
         if(cursor.getCount() > 0){
             db.close();
             return true;
